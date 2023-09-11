@@ -1,0 +1,21 @@
+.pic {
+    width: 60px;
+    height: 60px;
+}
+
+.links {
+    color: #6c757d;
+    font-weight: bold;
+    display: block;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.links:hover {
+    color: #0056b3;
+}
+
+.active {
+    color: #007bff;
+}
