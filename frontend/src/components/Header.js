@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import styles from "./Header.module.css";
+import styles from "../pages/css/Header.module.css";
 import logo from "../assets/logo.jpg";
+import PagesNavigation from "./PagesNavigation";
+import AccountNavigation from "./AccountNavigation";
 
 const Header = () => {
     const [isNavOpen, setIsNavOpen] = useState(false);
@@ -43,36 +45,15 @@ const Header = () => {
                         <ul className="navbar-nav ms-auto">
                             {windowWidth > 767 ? (
                                 <>
-                                    <li className="nav-item">
-                                        <NavLink to="/signin" className={styles.links}>Sign In</NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to="/createAccount" className={styles.links}>Create Account</NavLink>
-                                    </li>
+                                    <AccountNavigation />
                                 </>
                             ) : (
                                 <>
                                     <span className="ms-3 fs-5 fw-bold text-decoration-underline">Pages</span>
-                                    <li className="nav-item">
-                                        <NavLink to="/" className={({ isActive }) => isActive ? styles.links + " " + styles.active : styles.links} end>Home</NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to="/projects" className={({ isActive }) => isActive ? styles.links + " " + styles.active : styles.links}>Projects</NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to="/about" className={({ isActive }) => isActive ? styles.links + " " + styles.active : styles.links}>About</NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to="/contact" className={({ isActive }) => isActive ? styles.links + " " + styles.active : styles.links}>Contact</NavLink>
-                                    </li>
+                                    <PagesNavigation />
 
                                     <span className="ms-3 fs-5 fw-bold mt-3 text-decoration-underline">Account</span>
-                                    <li className="nav-item">
-                                        <NavLink to="/signin" className={styles.links}>Sign In</NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to="/createAccount" className={styles.links}>Create Account</NavLink>
-                                    </li>
+                                    <AccountNavigation />
                                 </>
                             )}
 
@@ -83,22 +64,11 @@ const Header = () => {
             {windowWidth > 767 && (
                 <nav className="navbar">
                     <div className="container">
-                        <ul className="nav">
-                            <li className="nav-item">
-                                <NavLink to="/" className={({ isActive }) => isActive ? styles.links + " " + styles.active : styles.links} end>Home</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink to="/projects" className={({ isActive }) => isActive ? styles.links + " " + styles.active : styles.links}>Projects</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink to="/about" className={({ isActive }) => isActive ? styles.links + " " + styles.active : styles.links}>About</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink to="/contact" className={({ isActive }) => isActive ? styles.links + " " + styles.active : styles.links}>Contact</NavLink>
-                            </li>
+                        <ul className="nav border-bottom border-3 border-dark pb-2">
+                            <PagesNavigation />
                         </ul>
                     </div>
-                </nav>
+                </nav>  
             )}
         </header>
     );
