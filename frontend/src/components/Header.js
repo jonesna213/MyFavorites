@@ -44,9 +44,7 @@ const Header = () => {
                     <div className={`collapse navbar-collapse ${isNavOpen ? 'show' : ''}`}>
                         <ul className="navbar-nav ms-auto">
                             {windowWidth > 767 ? (
-                                <>
-                                    <AccountNavigation />
-                                </>
+                                <AccountNavigation />
                             ) : (
                                 <>
                                     <span className="ms-3 fs-5 fw-bold text-decoration-underline">Pages</span>
@@ -56,7 +54,6 @@ const Header = () => {
                                     <AccountNavigation />
                                 </>
                             )}
-
                         </ul>
                     </div>
                 </div>
