@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { redirect, useNavigate } from "react-router";
 
-const SignIn = () => {
+const SignIn = props => {
     const [loggingInMessage, setLoggingInMessage] = useState(false);
     const [error, setError] = useState(false);
     const [unexpectedError, setUnexpectedError] = useState(false);
@@ -15,28 +15,15 @@ const SignIn = () => {
         const password = event.target.password.value;
         const email = event.target.email.value;
 
-        try {
-            const result = await fetch("", {
-                method: "post",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email,
-                    password
-                })
-            });
-            
-            if (result.json().user) {
-                setLoggingInMessage(false);
-                navigate("/", { replace: true });
-            }
-
-            setError(true);
-
-
+        const response = await props.onSignIn(email, password);
+        if (response === "Invalid Credentials.") {
             setLoggingInMessage(false);
-        } catch (err) {
+            setError(true);
+        } else if (response) {
+            setLoggingInMessage(false);
+            navigate("/");
+        } else {
+            setLoggingInMessage(false);
             setUnexpectedError(true);
         }
     }
@@ -47,7 +34,7 @@ const SignIn = () => {
 
             {loggingInMessage && <p className="text-secondary mt-5 text-center fw-bold">Signing you in...</p>}
             {error && <p className="text-danger mt-5 text-center fw-bold">Your email or password is incorrect!</p>}
-            {unexpectedError && <p className="text-danger mt-5 text-center fw-bold">An unexpected error while logging you in. Please try again later. Sorry for the inconvenience.</p>}
+            {unexpectedError && <p className="text-danger mt-5 text-center fw-bold">An unexpected error occurred while logging you in, please try again later. <br /> Sorry for the inconvenience.</p>}
 
             <form onSubmit={submitHandler} className="mx-auto border rounded py-4 px-5 my-5 shadow w-75">
                 <div className="my-3">
@@ -58,7 +45,7 @@ const SignIn = () => {
                     <label className="form-label" htmlFor="password">Password</label>
                     <input type="password" className="form-control bg-light" id="password" name="password" placeholder="Enter your password" required />
                 </div>
-                <button type="submit" className="btn btn-primary px-5 py-2 my-3">Submit</button>
+                <button type="submit" className="btn btn-primary px-5 py-2 my-3">Sign In</button>
             </form>
         </div>
     );

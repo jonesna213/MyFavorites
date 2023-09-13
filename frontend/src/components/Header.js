@@ -5,15 +5,17 @@ import logo from "../assets/logo.jpg";
 import PagesNavigation from "./PagesNavigation";
 import AccountNavigation from "./AccountNavigation";
 
-const Header = () => {
+const Header = props => {
     const [isNavOpen, setIsNavOpen] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [isLoggedIn, setIsLoggedIn] = useState(localStorage.isLoggedIn);
 
     const toggleNav = () => {
         setIsNavOpen(!isNavOpen);
     }
 
     useEffect(() => {
+        setIsLoggedIn(localStorage.isLoggedIn);
         const handleWindowResize = () => {
             setWindowWidth(window.innerWidth);
         };
@@ -44,14 +46,14 @@ const Header = () => {
                     <div className={`collapse navbar-collapse ${isNavOpen ? 'show' : ''}`}>
                         <ul className="navbar-nav ms-auto">
                             {windowWidth > 767 ? (
-                                <AccountNavigation />
+                                <AccountNavigation isLoggedIn={isLoggedIn} onLogout={props.onLogout} />
                             ) : (
                                 <>
                                     <span className="ms-3 fs-5 fw-bold text-decoration-underline">Pages</span>
-                                    <PagesNavigation />
-
+                                    <PagesNavigation isLoggedIn={isLoggedIn} />
+                                    
                                     <span className="ms-3 fs-5 fw-bold mt-3 text-decoration-underline">Account</span>
-                                    <AccountNavigation />
+                                    <AccountNavigation isLoggedIn={isLoggedIn} />
                                 </>
                             )}
                         </ul>
@@ -62,7 +64,7 @@ const Header = () => {
                 <nav className="navbar">
                     <div className="container">
                         <ul className="nav border-bottom border-3 border-dark pb-2">
-                            <PagesNavigation />
+                            <PagesNavigation isLoggedIn={isLoggedIn} />
                         </ul>
                     </div>
                 </nav>  
