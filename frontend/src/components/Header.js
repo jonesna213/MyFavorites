@@ -27,6 +27,8 @@ const Header = props => {
         };
     }, []);
 
+    
+
     return (
         <header>
             <nav className="navbar navbar-expand-md navbar-light bg-light">
@@ -51,7 +53,7 @@ const Header = props => {
                                 <>
                                     <span className="ms-3 fs-5 fw-bold text-decoration-underline">Pages</span>
                                     <PagesNavigation isLoggedIn={isLoggedIn} />
-                                    
+
                                     <span className="ms-3 fs-5 fw-bold mt-3 text-decoration-underline">Account</span>
                                     <AccountNavigation isLoggedIn={isLoggedIn} />
                                 </>
@@ -67,7 +69,7 @@ const Header = props => {
                             <PagesNavigation isLoggedIn={isLoggedIn} />
                         </ul>
                     </div>
-                </nav>  
+                </nav>
             )}
         </header>
     );

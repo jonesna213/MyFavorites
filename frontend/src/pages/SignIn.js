@@ -1,12 +1,9 @@
 import { useState } from "react";
-import { redirect, useNavigate } from "react-router";
 
 const SignIn = props => {
     const [loggingInMessage, setLoggingInMessage] = useState(false);
     const [error, setError] = useState(false);
     const [unexpectedError, setUnexpectedError] = useState(false);
-    const navigate = useNavigate();
-
 
     const submitHandler = async event => {
         event.preventDefault();
@@ -21,7 +18,7 @@ const SignIn = props => {
             setError(true);
         } else if (response) {
             setLoggingInMessage(false);
-            navigate("/");
+            window.location.href = "/";         //Maybe replace later. ran into problem with navigation not updating. this solves it though.
         } else {
             setLoggingInMessage(false);
             setUnexpectedError(true);
