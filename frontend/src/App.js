@@ -3,6 +3,7 @@ import RootLayout from "./pages/Root";
 import ErrorPage from "./pages/Error";
 import HomePage from "./pages/Home";
 import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 
 const signInHandler = async (email, password) => {
     try {
@@ -30,6 +31,10 @@ const signInHandler = async (email, password) => {
     }
 }
 
+const signUpHandler = async (name, email, password) => {
+
+}
+
 const logoutHandler = () => {
     localStorage.clear();
 }
@@ -37,11 +42,12 @@ const logoutHandler = () => {
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <RootLayout  onLogout={logoutHandler} />,
+        element: <RootLayout onLogout={logoutHandler} />,
         errorElement: <ErrorPage />,
         children: [
             { index: true, element: <HomePage /> },
-            { path: "/signin", element: <SignIn onSignIn={signInHandler} /> }
+            { path: "/signin", element: <SignIn onSignIn={signInHandler} /> },
+            { path: "/signup", element: <SignUp onSignUp={signUpHandler} /> }
         ]
     }
 ]);

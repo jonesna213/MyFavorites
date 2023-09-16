@@ -16,7 +16,7 @@ const AccountNavigation = props => {
                         <NavLink to="/signin" className={styles.links}>Sign In</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink to="/createAccount" className={styles.links}>Create Account</NavLink>
+                        <NavLink to="/signup" className={styles.links}>Create Account</NavLink>
                     </li>
                 </>
             )}

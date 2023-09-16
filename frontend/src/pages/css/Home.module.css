@@ -1,0 +1,9 @@
+.form {
+    margin: 8rem 0;
+}
+
+@media (min-width: 576px) {
+    .form {
+        margin: 15rem 0;
+    }
+}
