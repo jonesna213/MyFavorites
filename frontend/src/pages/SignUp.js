@@ -60,24 +60,40 @@ const SignUp = props => {
             return;
         }
 
-        const response = await props.onSignUp(name, email, password, confirmPassword);
+        try {
+            const result = await fetch("http://localhost:8080/auth/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    password,
+                    confirmPassword
+                })
+            });
+    
+            if (result.ok) {
+                navigate("/signin");
+            } else {
+                setAccountExists(true);
+                setCreatingAccountMessage(false);
+                return;
+            }
 
-        setCreatingAccountMessage(false);
+            setCreatingAccountMessage(false);
         
-        if (response === "An account with this email already exists.") {
-            setAccountExists(true);
-            return;
-        } else if (response) {
-            navigate("/signin");
-        } else {
+            resetNameInput();
+            resetEmailInput();
+            resetPasswordInput();
+            resetConfirmPasswordInput();
+    
+        } catch (err) {
             setError(true);
+            setCreatingAccountMessage(false);
             return;
         }
-        
-        resetNameInput();
-        resetEmailInput();
-        resetPasswordInput();
-        resetConfirmPasswordInput();
     }   
 
     return (

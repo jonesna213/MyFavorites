@@ -35,35 +35,6 @@ const signInHandler = async (email, password) => {
     }
 }
 
-//for handling signup requests
-const signUpHandler = async (name, email, password, confirmPassword) => {
-    try {
-        const result = await fetch("http://localhost:8080/auth/signup", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                name,
-                email,
-                password,
-                confirmPassword
-            })
-        });
-
-        const resData = await result.json();
-
-        if (result.ok) {
-            return true;
-        } else {
-            return resData.message;
-        }
-
-    } catch (err) {
-        return false;
-    }
-}
-
 const logoutHandler = () => {
     localStorage.clear();
 }
@@ -76,7 +47,7 @@ const router = createBrowserRouter([
         children: [
             { index: true, element: <HomePage /> },
             { path: "/signin", element: <SignIn onSignIn={signInHandler} /> },
-            { path: "/signup", element: <SignUp onSignUp={signUpHandler} /> }
+            { path: "/signup", element: <SignUp /> }
         ]
     }
 ]);
