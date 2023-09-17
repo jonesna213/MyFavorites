@@ -2,29 +2,26 @@ const express = require("express");
 const { body } = require("express-validator");
 
 const authController = require("../controllers/auth");
-const User = require("../models/user");
-const isAuth = require("../middleware/isAuth");
 
 const router = express.Router();
 
-router.put("/signup", [
+router.post("/signup", [
     body("email")
         .isEmail()
         .withMessage("Please enter a valid email.")
-        .custom((value, { req }) => {
-            return User.findOne({ email: value })
-                .then(user => {
-                    if (user) {
-                        return Promise.reject("A user with this email already exists");
-                    }
-                })
-        })
         .normalizeEmail(),
 
     body("password")
         .trim()
-        .isLength({ min: 5 }),
-        
+        .isLength({ min: 5 })
+        .withMessage("Enter a valid password (5 or more characters)."),
+    body("confirmPassword").custom((value, { req }) => {
+        if (value !== req.body.password) {
+            throw new Error("Passwords have to match!");
+        }
+        return true;
+    }).trim(),
+
     body("name")
         .trim()
         .not().isEmpty()

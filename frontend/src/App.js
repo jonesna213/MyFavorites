@@ -18,12 +18,15 @@ const signInHandler = async (email, password) => {
             })
         });
 
+        const resData = await result.json();
+
         if (result.ok) {
-            const resData = await result.json();
             localStorage.setItem("userId", resData.userId);
             localStorage.setItem("token", resData.token);
             localStorage.setItem("isLoggedIn", true);
             return true;
+        } else {
+            return resData.message;
         }
 
     } catch (err) {
@@ -31,8 +34,32 @@ const signInHandler = async (email, password) => {
     }
 }
 
-const signUpHandler = async (name, email, password) => {
+const signUpHandler = async (name, email, password, confirmPassword) => {
+    try {
+        const result = await fetch("http://localhost:8080/auth/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                password,
+                confirmPassword
+            })
+        });
 
+        const resData = await result.json();
+
+        if (result.ok) {
+            return true;
+        } else {
+            return resData.message;
+        }
+
+    } catch (err) {
+        return false;
+    }
 }
 
 const logoutHandler = () => {

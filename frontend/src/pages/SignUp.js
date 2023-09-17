@@ -1,9 +1,12 @@
 import { useState } from "react";
 import useInput from "../hooks/useInput";
+import { useNavigate } from "react-router";
 
 const SignUp = props => {
     const [creatingAccountMessage, setCreatingAccountMessage] = useState(false);
     const [error, setError] = useState(false);
+    const [accountExists, setAccountExists] = useState(false);
+    const navigate = useNavigate();
 
     const { 
         value: name,
@@ -51,13 +54,25 @@ const SignUp = props => {
         event.preventDefault();
         setCreatingAccountMessage(true);
         setError(false);
+        setAccountExists(false);
 
         if (!formIsValid) {
             return;
         }
 
+        const response = await props.onSignUp(name, email, password, confirmPassword);
 
-        const response = await props.onSignUp();
+        setCreatingAccountMessage(false);
+        
+        if (response === "An account with this email already exists.") {
+            setAccountExists(true);
+            return;
+        } else if (response) {
+            navigate("/signin");
+        } else {
+            setError(true);
+            return;
+        }
         
         resetNameInput();
         resetEmailInput();
@@ -69,7 +84,8 @@ const SignUp = props => {
         <div className="container">
             <h1 className="mt-5 fw-bold text-center">Sign Up</h1>
 
-            {creatingAccountMessage && <p className="text-secondary mt-5 text-center fw-bold">Creating your account...</p>}
+            {creatingAccountMessage && <p className="text-secondary mt-5 text-center fw-bold">Creating your account...</p>} 
+            {accountExists && <p className="text-danger mt-5 text-center fw-bold">An account with this email already exists.</p>}
             {error && <p className="text-danger mt-5 text-center fw-bold">An error occurred while creating your account. Please try again later. Sorry for the inconvenience.</p>}
 
             <form onSubmit={submitHandler} className="mx-auto border rounded py-4 px-5 my-5 shadow w-75">

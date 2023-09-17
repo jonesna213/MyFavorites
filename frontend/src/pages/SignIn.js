@@ -16,12 +16,14 @@ const SignIn = props => {
         if (response === "Invalid Credentials.") {
             setLoggingInMessage(false);
             setError(true);
+            return;
         } else if (response) {
             setLoggingInMessage(false);
             window.location.href = "/";         //Maybe replace later. ran into problem with navigation not updating. this solves it though.
         } else {
             setLoggingInMessage(false);
             setUnexpectedError(true);
+            return;
         }
     }
 
