@@ -5,6 +5,7 @@ import HomePage from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 
+//For handling sign in requests
 const signInHandler = async (email, password) => {
     try {
         const result = await fetch("http://localhost:8080/auth/login", {
@@ -34,6 +35,7 @@ const signInHandler = async (email, password) => {
     }
 }
 
+//for handling signup requests
 const signUpHandler = async (name, email, password, confirmPassword) => {
     try {
         const result = await fetch("http://localhost:8080/auth/signup", {

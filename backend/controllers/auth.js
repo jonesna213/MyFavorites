@@ -19,7 +19,7 @@ exports.signup = async (req, res, next) => {
     const password = req.body.password;
 
     try {
-        const emailExists = User.findOne({ email: email });
+        const emailExists = await User.findOne({ email: email });
         if (emailExists) {
             const error = new Error("An account with this email already exists.");
             error.statusCode = 422;
