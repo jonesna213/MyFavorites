@@ -2,7 +2,7 @@ import { useState } from "react";
 import useInput from "../hooks/useInput";
 import { useNavigate } from "react-router";
 
-const SignUp = props => {
+const SignUp = () => {
     const [creatingAccountMessage, setCreatingAccountMessage] = useState(false);
     const [error, setError] = useState(false);
     const [accountExists, setAccountExists] = useState(false);
