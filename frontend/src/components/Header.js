@@ -5,7 +5,7 @@ import logo from "../assets/logo.jpg";
 import PagesNavigation from "./PagesNavigation";
 import AccountNavigation from "./AccountNavigation";
 
-const Header = props => {
+const Header = () => {
     const [isNavOpen, setIsNavOpen] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isLoggedIn, setIsLoggedIn] = useState(localStorage.isLoggedIn);
@@ -48,7 +48,7 @@ const Header = props => {
                     <div className={`collapse navbar-collapse ${isNavOpen ? 'show' : ''}`}>
                         <ul className="navbar-nav ms-auto">
                             {windowWidth > 767 ? (
-                                <AccountNavigation isLoggedIn={isLoggedIn} onLogout={props.onLogout} />
+                                <AccountNavigation isLoggedIn={isLoggedIn} />
                             ) : (
                                 <>
                                     <span className="ms-3 fs-5 fw-bold text-decoration-underline">Pages</span>

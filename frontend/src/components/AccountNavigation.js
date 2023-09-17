@@ -2,12 +2,16 @@ import { NavLink } from "react-router-dom";
 import styles from "../pages/css/Header.module.css";
 
 const AccountNavigation = props => {
+    const logoutHandler = () => {
+        localStorage.clear();
+    }
+
     return (
         <>
             {props.isLoggedIn ? (
                 <>
                     <li className="nav-item">
-                        <a href="/" onClick={props.onLogout} className={styles.links}>Logout</a>
+                        <a href="/" onClick={logoutHandler} className={styles.links}>Logout</a>
                     </li>
                 </>
             ) : (

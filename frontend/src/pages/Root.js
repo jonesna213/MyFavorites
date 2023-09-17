@@ -2,10 +2,10 @@ import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-const RootLayout = props => {
+const RootLayout = () => {
     return (
         <>
-            <Header onLogout={props.onLogout} />
+            <Header />
             <main className="container">
                 <Outlet />
             </main>

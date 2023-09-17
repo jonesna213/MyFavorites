@@ -5,14 +5,10 @@ import HomePage from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 
-const logoutHandler = () => {
-    localStorage.clear();
-}
-
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <RootLayout onLogout={logoutHandler} />,
+        element: <RootLayout />,
         errorElement: <ErrorPage />,
         children: [
             { index: true, element: <HomePage /> },
