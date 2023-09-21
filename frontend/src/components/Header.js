@@ -27,8 +27,6 @@ const Header = () => {
         };
     }, []);
 
-    
-
     return (
         <header>
             <nav className="navbar navbar-expand-md navbar-light bg-light">

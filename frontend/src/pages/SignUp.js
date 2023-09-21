@@ -46,7 +46,7 @@ const SignUp = () => {
 
     let formIsValid = false;
 
-    if (nameIsValid && emailIsValid & passwordIsValid && confirmPasswordIsValid) {
+    if (nameIsValid && emailIsValid && passwordIsValid && confirmPasswordIsValid) {
         formIsValid = true;
     }
 
