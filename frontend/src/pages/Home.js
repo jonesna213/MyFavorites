@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 import styles from "./css/Home.module.css";
 
 const HomePage = () => {
@@ -37,7 +38,7 @@ const HomePage = () => {
                     const isbn13 = i.volumeInfo.industryIdentifiers.find(i => {
                         return i.type === "ISBN_13"
                     });
-                    
+
                     return {
                         id: i.id,
                         kind: "book",
@@ -47,8 +48,7 @@ const HomePage = () => {
                         isbn10: isbn10.identifier || "",
                         isbn13: isbn13.identifier || "",
                         publishedDate: i.volumeInfo.publishedDate,
-                        title: i.volumeInfo.title,
-                        description: i.volumeInfo.description
+                        title: i.volumeInfo.title
                     };
                 }));
 
@@ -85,32 +85,43 @@ const HomePage = () => {
                 </form>
             </section>
 
-            {searchResults.length > 0 && (
+            {searchResults.length > 0 ? (
                 <section>
                     <p>Total items found: {totalItems}</p>
                     <ul>
                         {searchResults.map(b => (
-                            <li key={b.id}>
-                                <img src={b.imageLinks.thumbnail} alt={`Thumbnail for ${b.title}`} />
-                                <p>{b.title}</p>
-                                <p>{b.authors}</p>
-                                <p>{b.description}</p>
-                                <p>{b.isbn10}</p>
-                                <p>{b.isbn13}</p>
-                                <p>{b.publishedDate}</p>
-                            </li>
+                            <NavLink to={`/details/id=${b.id}`} className="text-decoration-none">
+                                <li className="card w-100 my-3" key={b.id}>
+                                    <div className="row">
+                                        <div className="col-4">
+                                            <img className="img-fluid rounded-start" src={b.imageLinks.thumbnail} alt={`Thumbnail for ${b.title}`} />
+                                        </div>
+                                        <div className="col-8">
+                                            <div className="card-body">
+                                                <h5 className="card-title">{b.title}</h5>
+                                                {b.authors.length > 1 ? (
+                                                    <p className="card-text">Authors: {b.authors.join(", ")} <small className="ms-3 text-body-secondary">Published: {b.publishedDate}</small></p>
+                                                ) : (
+                                                    <p className="card-text">Author: {b.authors} <small className="ms-3 text-body-secondary">Published: {b.publishedDate}</small></p>
+                                                )}
+                                                <p className="card-text"><small className="text-body-secondary">ISBN: <br /> {b.isbn10}<br />{b.isbn13}</small></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </NavLink>
                         ))}
                     </ul>
                 </section>
+            ) : (
+                <section>
+                    <h1 className="text-center text-decoration-underline">Top favorites this week</h1>
+
+                    <ul className="w-75 mx-auto my-5 text-center list-unstyled">
+                        <li className="border rounded mx-auto py-1 w-75">Favorite #1 <a className="d-inline-block ms-5 border border-2 rounded bg-light p-1 text-decoration-none text-dark" href="/details?itemId=1">Details</a></li>
+                    </ul>
+                </section>
             )}
-
-            <section>
-                <h1 className="text-center text-decoration-underline">Top favorites this week</h1>
-
-                <ul className="w-75 mx-auto my-5 text-center list-unstyled">
-                    <li className="border rounded mx-auto py-1 w-75">Favorite #1 <a className="d-inline-block ms-5 border border-2 rounded bg-light p-1 text-decoration-none text-dark" href="/details?itemId=1">Details</a></li>
-                </ul>
-            </section>
         </>
     );
 }
