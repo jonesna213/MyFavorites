@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "./css/Home.module.css";
 
 const HomePage = () => {
@@ -90,7 +90,7 @@ const HomePage = () => {
                     <p>Total items found: {totalItems}</p>
                     <ul>
                         {searchResults.map(b => (
-                            <NavLink to={`/details/id=${b.id}`} className="text-decoration-none">
+                            <Link to={`/details/id=${b.id}`} className="text-decoration-none">
                                 <li className="card w-100 my-3" key={b.id}>
                                     <div className="row">
                                         <div className="col-4">
@@ -109,7 +109,7 @@ const HomePage = () => {
                                         </div>
                                     </div>
                                 </li>
-                            </NavLink>
+                            </Link>
                         ))}
                     </ul>
                 </section>
