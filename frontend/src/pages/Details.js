@@ -8,11 +8,7 @@ const Details = () => {
         <>
             <Suspense fallback={<p className="text-center">Loading...</p>}>
                 <Await resolve={item}>
-                    {(loadedItem => (
-                        <>
-                            <h1>{loadedItem.title}</h1>
-                        </>
-                    ))}
+                    <h1>test</h1>
                 </Await>
             </Suspense>
         </>
@@ -22,8 +18,10 @@ const Details = () => {
 export default Details;
 
 const loadItem = async id => {
+    const searchId = id.split("=")[1];
+    
     try {
-        const result = await fetch(`https://www.googleapis.com/books/v1/volumes/mvmGPgAACAAJ`);
+        const result = await fetch(`https://www.googleapis.com/books/v1/volumes/${searchId}`);
 
         const resData = await result.json();
 

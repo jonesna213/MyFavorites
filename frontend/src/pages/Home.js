@@ -118,7 +118,7 @@ const HomePage = () => {
                     <h1 className="text-center text-decoration-underline">Top favorites this week</h1>
 
                     <ul className="w-75 mx-auto my-5 text-center list-unstyled">
-                        <li className="border rounded mx-auto py-1 w-75">Favorite #1 <a className="d-inline-block ms-5 border border-2 rounded bg-light p-1 text-decoration-none text-dark" href="/details?itemId=1">Details</a></li>
+                        <li className="border rounded mx-auto py-1 w-75">Favorite #1 <a className="d-inline-block ms-5 border border-2 rounded bg-light p-1 text-decoration-none text-dark" href="/details/id=1">Details</a></li>
                     </ul>
                 </section>
             )}
