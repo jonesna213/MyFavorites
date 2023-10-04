@@ -1,27 +1,49 @@
 import { Suspense } from "react";
-import { Await, defer, json, useLoaderData } from "react-router";
+import { Await, defer, useLoaderData } from "react-router";
 import parse from "html-react-parser";
+import { Link } from "react-router-dom";
 
 const Details = () => {
     const { item } = useLoaderData();
     console.log(item);
     return (
-        <>
-            <Suspense fallback={<p className="text-center">Loading...</p>}>
-                <Await resolve={item}>
-                    <div className="row mt-5">
-                        <div className="col">
-                            <h2 className="mb-3">{item.title}</h2>
-                            <img className="img-fluid" src={item.imageLinks.small ? item.imageLinks.small : item.imageLinks.thumbnail} alt={`Cover for ${item.title}`} />
+        <Suspense fallback={<p className="text-center">Loading...</p>}>
+            <Await resolve={item}>
+                {item.errorMessage ? (
+                    <h4 className="text-center text-danger py-5">{item.message}</h4>
+                ) : (
+                    <>
+                        <Link to="/" className="btn btn-secondary px-4 my-3">Back</Link>
+                        <div className="row my-3">
+                            <div className="col">
+                                <h2 className="mb-3">{item.title}</h2>
+                                <img className="img-fluid" src={item.imageLinks.small || item.imageLinks.thumbnail} alt={`Cover for ${item.title}`} />
+                            </div>
+                            <div className="col my-5">
+                                <div className="my-5">
+                                    <p className="fw-bolder">{item.authors.length > 1 ? item.authors.join(", ") : item.authors}</p>
+                                    <p>{item.publishedDate}, {item.publisher}</p>
+                                    <p>{item.pageCount} pages</p>
+                                    {item.isbn10 !== "" && (
+                                        <p className="small mb-0">ISBN-10 - {item.isbn10}</p>
+                                    )}
+                                    <p className="small mt-0">ISBN-13 - {item.isbn13}</p>
+                                    <a className="btn btn-primary" href={item.googleLink} target="_blank" rel="noreferrer">Buy on Google Play</a>
+                                </div>
+                            </div>
+
                         </div>
-                        <div className="col">
-                            <h4>Description:</h4>
-                            {parse(item.description)}
+                        <div className="row">
+                            <div className="col">
+                                <h4>Description:</h4>
+                                {parse(item.description)}
+                            </div>
                         </div>
-                    </div>
-                </Await>
-            </Suspense>
-        </>
+                    </>
+                )}
+
+            </Await>
+        </Suspense>
     );
 }
 
@@ -57,17 +79,18 @@ const loadItem = async id => {
                 publishedDate: resData.volumeInfo.publishedDate,
                 publisher: resData.volumeInfo.publisher,
                 description: resData.volumeInfo.description,
-                title: resData.volumeInfo.title
+                title: resData.volumeInfo.title,
+                googleLink: resData.volumeInfo.infoLink
             };
 
             return item;
         } else {
-            throw json({ message: "Could not fetch details for selected item." }, { status: 500 });
+            return { errorMessage: "Could not fetch details for selected item." };
         }
 
     } catch (err) {
         console.log(err);
-        throw json({ message: "An error occurred, please try again later." }, { status: 500 });
+        return { errorMessage: "An error occurred, please try again later." };
     }
 }
 
