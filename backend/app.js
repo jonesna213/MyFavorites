@@ -5,6 +5,7 @@ require('dotenv').config();
 
 //getting routes
 const authRoutes = require("./routes/auth");
+const favoritesRoutes = require("./routes/favorites");
 
 //config
 const app = express();
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 
 //setting routes
 app.use("/auth", authRoutes);
+app.use("/favorites", favoritesRoutes);
 
 //default error route
 app.use((error, req, res, next) => {
