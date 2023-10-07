@@ -4,7 +4,7 @@ import ErrorPage from "./pages/Error";
 import HomePage from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import Details, {loader as itemDetailLoader} from "./pages/Details";
+import Details, { loader as itemDetailLoader } from "./pages/Details";
 
 const router = createBrowserRouter([
     {

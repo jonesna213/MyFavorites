@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./css/Home.module.css";
+import addToFavorites from "../hooks/AddToFavorites";
 
 const HomePage = () => {
     const [error, setError] = useState();
@@ -10,7 +11,7 @@ const HomePage = () => {
     const [totalItems, setTotalItems] = useState();
     let startIndex = 0;
 
-    const submitHandler = async event => {
+    const searchHandler = async event => {
         event.preventDefault();
         setSearching(true);
         setError(false);
@@ -68,10 +69,14 @@ const HomePage = () => {
         }
     }
 
+    const addFavoriteHandler = () => {
+        
+    }
+
     return (
         <>
             <section>
-                <form onSubmit={submitHandler} className={`mx-auto w-75 row ${styles.form}`}>
+                <form onSubmit={searchHandler} className={`mx-auto w-75 row ${styles.form}`}>
                     {error && <p className="text-center text-danger mb-5">An error has occurred. Please try again later, we are sorry for the inconvenience.</p>}
 
                     <div className="col-8">

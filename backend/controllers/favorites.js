@@ -31,10 +31,17 @@ exports.addFavorite = async (req, res, next) => {
         await user.save();
 
         res.status(201).json({
-
+            message: "Successfully added favorite"
         });
-        
-    } catch (err) {
 
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
+}
+
+exports.getFavorites = async (req, res, next) => {
+
 }
