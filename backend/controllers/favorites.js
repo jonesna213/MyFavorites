@@ -2,6 +2,12 @@ const { validationResult } = require("express-validator");
 const User = require("../models/user");
 const Favorite = require("../models/favorite");
 
+/**
+ * Deals with adding a favorite to the users account.
+ * The request either contains errors from the validator or the data to add to the database.
+ * Then creates a new favorite object and inserts it into the database and send 
+ * a response.
+ */
 exports.addFavorite = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

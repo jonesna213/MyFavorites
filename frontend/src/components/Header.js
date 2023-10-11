@@ -10,10 +10,12 @@ const Header = () => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isLoggedIn, setIsLoggedIn] = useState(localStorage.isLoggedIn);
 
+    //Toggles the navigation for mobile users
     const toggleNav = () => {
         setIsNavOpen(!isNavOpen);
     }
 
+    //For updating the navigation buttons due to the user being logged in or not. also deals with checking if its a mobile device or not
     useEffect(() => {
         setIsLoggedIn(localStorage.isLoggedIn);
         const handleWindowResize = () => {

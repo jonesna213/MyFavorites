@@ -50,6 +50,12 @@ const SignUp = () => {
         formIsValid = true;
     }
 
+    /**
+     * Deals with signing up a user. Takes in the inputs and calls the backend api which returns either a error or success message.
+     * 
+     * @param {*} event 
+     * @returns nothing but, sets the required states or reroutes the user. 
+     */
     const submitHandler = async event => {
         event.preventDefault();
         setCreatingAccountMessage(true);

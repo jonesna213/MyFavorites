@@ -10,7 +10,7 @@ const Details = () => {
         <Suspense fallback={<p className="text-center">Loading...</p>}>
             <Await resolve={item}>
                 {item.errorMessage ? (
-                    <h4 className="text-center text-danger py-5">{item.message}</h4>
+                    <h4 className="text-center text-danger py-5">{item.errorMessage}</h4>
                 ) : (
                     <>
                         <Link to="/" className="btn btn-secondary px-4 my-3">Back</Link>
@@ -22,26 +22,28 @@ const Details = () => {
                             <div className="col my-5">
                                 <div className="my-5">
                                     <p className="fw-bolder">{item.authors.length > 1 ? item.authors.join(", ") : item.authors}</p>
-                                    <p>{item.publishedDate}, {item.publisher}</p>
+                                    <p>Published: {item.publishedDate}</p>
+                                    <p>Publisher: {item.publisher}</p>
                                     <p>{item.pageCount} pages</p>
-                                    {item.isbn10 !== "" && (
-                                        <p className="small mb-0">ISBN-10 - {item.isbn10}</p>
-                                    )}
-                                    <p className="small mt-0">ISBN-13 - {item.isbn13}</p>
+                                    {item.identifiers.map(i => {
+                                        return <p className="small mb-0">
+                                            {i.type.replace("_", "")} - {i.identifier}
+                                        </p>
+                                    })}
                                     <a className="btn btn-primary" href={item.googleLink} target="_blank" rel="noreferrer">Buy on Google Play</a>
                                 </div>
                             </div>
-
                         </div>
-                        <div className="row">
-                            <div className="col">
-                                <h4>Description:</h4>
-                                {parse(item.description)}
+                        {item.description && (
+                            <div className="row">
+                                <div className="col">
+                                    <h4>Description:</h4>
+                                    {parse(item.description)}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </>
                 )}
-
             </Await>
         </Suspense>
     );
@@ -49,6 +51,12 @@ const Details = () => {
 
 export default Details;
 
+/**
+ * Takes the id of a item and searches for it in the api
+ * 
+ * @param {number} id 
+ * @returns either and object of the item or a object containing an error message
+ */
 const loadItem = async id => {
     const searchId = id.split("=")[1];
 
@@ -60,22 +68,13 @@ const loadItem = async id => {
         console.log(resData);
 
         if (result.ok) {
-            const isbn10 = resData.volumeInfo.industryIdentifiers.find(i => {
-                return i.type === "ISBN_10"
-            });
-
-            const isbn13 = resData.volumeInfo.industryIdentifiers.find(i => {
-                return i.type === "ISBN_13"
-            });
-
             const item = {
                 id: resData.id,
                 kind: "book",
-                authors: [...resData.volumeInfo.authors],
+                authors: [...resData.volumeInfo.authors || []],
                 pageCount: resData.volumeInfo.pageCount,
                 imageLinks: { ...resData.volumeInfo.imageLinks },
-                isbn10: isbn10.identifier || "",
-                isbn13: isbn13.identifier || "",
+                identifiers: resData.volumeInfo.industryIdentifiers || [],
                 publishedDate: resData.volumeInfo.publishedDate,
                 publisher: resData.volumeInfo.publisher,
                 description: resData.volumeInfo.description,
@@ -94,11 +93,19 @@ const loadItem = async id => {
     }
 }
 
+/**
+ * Loader for the details page. Gets required params and calls the loadItem function.
+ * 
+ * @param {*} params 
+ * @returns an object containing the item and search term
+ */
 export const loader = async ({ req, params }) => {
     const id = params.id;
+    const search = params.search;
 
 
     return defer({
-        item: await loadItem(id)
+        item: await loadItem(id),
+        search
     });
 }

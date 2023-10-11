@@ -5,6 +5,11 @@ require('dotenv').config();
 
 const User = require("../models/user");
 
+/**
+ * This deals with signing up a user. In the request there will either be errors from express validator or
+ * it will contain the email, name, and password from the user. Then attempts to insert user in database and either throws an 
+ * error or send a successful response with the users id.  
+ */
 exports.signup = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -49,6 +54,10 @@ exports.signup = async (req, res, next) => {
     }
 }
 
+/**
+ * Deals with logging a user in. The request will contain the email and password passed in from the user.
+ * Will then validate credentials and either throw an error or send a response containing the users id and token.
+ */
 exports.login = async (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;

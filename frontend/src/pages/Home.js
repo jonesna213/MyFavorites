@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./css/Home.module.css";
-import addToFavorites from "../hooks/AddToFavorites";
 
 const HomePage = () => {
     const [error, setError] = useState();
@@ -11,6 +10,12 @@ const HomePage = () => {
     const [totalItems, setTotalItems] = useState();
     let startIndex = 0;
 
+    /**
+     * Runs when the search button is clicked. Takes input then searches api with the passed in search term.
+     * 
+     * @param {*} event 
+     * @returns technically nothing but, sets the required states
+     */
     const searchHandler = async event => {
         event.preventDefault();
         setSearching(true);
@@ -21,37 +26,30 @@ const HomePage = () => {
         const searchType = "intitle"; //get from dropdown thing
         const maxResults = 20;
 
-
         try {
             const result = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchType}:${searchTerm}&startIndex=${startIndex}&maxResults=${maxResults}`);
 
             const resData = await result.json();
 
-            //console.log(resData);
+            console.log(resData);
 
             if (result.ok) {
                 setTotalItems(resData.totalItems);
                 setSearchResults(resData.items.map(i => {
-                    const isbn10 = i.volumeInfo.industryIdentifiers.find(i => {
-                        return i.type === "ISBN_10"
-                    });
-
-                    const isbn13 = i.volumeInfo.industryIdentifiers.find(i => {
-                        return i.type === "ISBN_13"
-                    });
 
                     return {
                         id: i.id,
                         kind: "book",
                         selfLink: i.selfLink,
-                        authors: [...i.volumeInfo.authors],
+                        authors: [...i.volumeInfo.authors || []],
                         imageLinks: { ...i.volumeInfo.imageLinks },
-                        isbn10: isbn10.identifier || "",
-                        isbn13: isbn13.identifier || "",
+                        identifiers: i.volumeInfo.industryIdentifiers || [],
                         publishedDate: i.volumeInfo.publishedDate,
                         title: i.volumeInfo.title
                     };
                 }));
+
+                console.log(searchResults);
 
                 setSearching(false);
                 return;
@@ -70,8 +68,9 @@ const HomePage = () => {
     }
 
     const addFavoriteHandler = () => {
-        
+
     }
+
 
     return (
         <>
@@ -95,8 +94,8 @@ const HomePage = () => {
                     <p>Total items found: {totalItems}</p>
                     <ul>
                         {searchResults.map(b => (
-                            <Link to={`/details/id=${b.id}`} className="text-decoration-none">
-                                <li className="card w-100 my-3" key={b.id}>
+                            <Link to={`/details/id=${b.id}/search=${search}`} className="text-decoration-none" key={b.id}>
+                                <li className="card w-100 my-3">
                                     <div className="row">
                                         <div className="col-4">
                                             <img className="img-fluid rounded-start" src={b.imageLinks.thumbnail} alt={`Thumbnail for ${b.title}`} />
@@ -104,15 +103,22 @@ const HomePage = () => {
                                         <div className="col-8">
                                             <div className="card-body">
                                                 <h5 className="card-title">{b.title}</h5>
-                                                {b.authors.length > 1 ? (
+                                                {b.authors.length > 1 && (
                                                     <p className="card-text">Authors: {b.authors.join(", ")} <small className="ms-3 text-body-secondary">Published: {b.publishedDate}</small></p>
-                                                ) : (
+                                                )}
+                                                {b.authors.length === 1 && (
                                                     <p className="card-text">Author: {b.authors} <small className="ms-3 text-body-secondary">Published: {b.publishedDate}</small></p>
                                                 )}
-                                                <p className="card-text"><small className="text-body-secondary">ISBN: <br /> {b.isbn10}<br />{b.isbn13}</small></p>
+                                                <p className="card-text"><small className="text-body-secondary">{b.identifiers.map(i => {
+                                                    return <>
+                                                        {i.type.replace("_", "")}: {i.identifier}
+                                                        <br />
+                                                    </>
+                                                })}</small></p>
                                             </div>
                                         </div>
                                     </div>
+
                                 </li>
                             </Link>
                         ))}

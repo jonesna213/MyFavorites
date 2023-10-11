@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import styles from "../pages/css/Header.module.css";
 
 const AccountNavigation = props => {
+    //Handles logging a user out
     const logoutHandler = () => {
         localStorage.clear();
     }

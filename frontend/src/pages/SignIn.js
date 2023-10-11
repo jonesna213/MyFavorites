@@ -5,6 +5,12 @@ const SignIn = () => {
     const [error, setError] = useState(false);
     const [unexpectedError, setUnexpectedError] = useState(false);
 
+    /**
+     * For logging the user in. Takes the inputs and calls the backend api.
+     * 
+     * @param {*} event 
+     * @returns technically nothing but, sets the required states or reroutes the page.
+     */
     const submitHandler = async event => {
         event.preventDefault();
         setLoggingInMessage(true);

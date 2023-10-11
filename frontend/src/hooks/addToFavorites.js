@@ -1,3 +1,10 @@
+/**
+ * This hook takes the id and type of an item and adds it to the users favorites list.
+ * 
+ * @param {number} id 
+ * @param {string} type 
+ * @returns either a success message or an error/false
+ */
 const addToFavorites = async (id, type) => {
     if (!localStorage.getItem("userId") || !localStorage.getItem("token")) {
         return false;

@@ -1,5 +1,11 @@
 import { useState } from "react";
 
+/**
+ * This hook takes the value you want validated and creates states and handlers for the input
+ * 
+ * @param {*} validateValue 
+ * @returns an object of values and handlers
+ */
 const useInput = (validateValue) => {
     const [value, setValue] = useState("");
     const [isTouched, setIsTouched] = useState(false);

@@ -1,6 +1,10 @@
 const jwt = require("jsonwebtoken");
 require('dotenv').config();
 
+/**
+ * Validates the JWT token. 
+ * Either throws an error or sets the userId in the request and calls next/ 
+ */
 module.exports = (req, res, next) => {
     const authHeader = req.get("Authorization");
     if (!authHeader) {
