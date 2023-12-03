@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./css/Home.module.css";
+import noImage from "../assets/Image_not_available.png";
 
-const HomePage = () => {
+const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchResults, totalItems, updateTotalItems }) => {
     const [error, setError] = useState();
     const [searching, setSearching] = useState();
-    const [search, setSearch] = useState("");
-    const [searchResults, setSearchResults] = useState([]);
-    const [totalItems, setTotalItems] = useState();
     let startIndex = 0;
 
     /**
@@ -17,32 +15,41 @@ const HomePage = () => {
      * @returns technically nothing but, sets the required states
      */
     const searchHandler = async event => {
-        event.preventDefault();
+        if (event) {
+            event.preventDefault();
+        }
         setSearching(true);
         setError(false);
 
-        const searchTerm = search.trim().replace(" ", "%20");
+        const search = searchTerm.trim().replace(" ", "%20");
 
         const searchType = "intitle"; //get from dropdown thing
         const maxResults = 20;
 
         try {
-            const result = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchType}:${searchTerm}&startIndex=${startIndex}&maxResults=${maxResults}`);
+            const result = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchType}:${search}&startIndex=${startIndex}&maxResults=${maxResults}`);
 
             const resData = await result.json();
 
             console.log(resData);
 
             if (result.ok) {
-                setTotalItems(resData.totalItems);
-                setSearchResults(resData.items.map(i => {
+                updateTotalItems(resData.totalItems);
+                updateSearchResults(resData.items.map(i => {
+
+                    let imageLink;
+                    if (!i.volumeInfo.imageLinks || !i.volumeInfo.imageLinks.thumbnail) {
+                        imageLink = noImage;
+                    } else {
+                        imageLink = i.volumeInfo.imageLinks.thumbnail
+                    }
 
                     return {
                         id: i.id,
                         kind: "book",
                         selfLink: i.selfLink,
                         authors: [...i.volumeInfo.authors || []],
-                        imageLinks: { ...i.volumeInfo.imageLinks },
+                        imageLink,
                         identifiers: i.volumeInfo.industryIdentifiers || [],
                         publishedDate: i.volumeInfo.publishedDate,
                         title: i.volumeInfo.title
@@ -71,7 +78,6 @@ const HomePage = () => {
 
     }
 
-
     return (
         <>
             <section>
@@ -79,7 +85,7 @@ const HomePage = () => {
                     {error && <p className="text-center text-danger mb-5">An error has occurred. Please try again later, we are sorry for the inconvenience.</p>}
 
                     <div className="col-8">
-                        <input type="text" className="form-control" id="searchTerm" name="searchTerm" placeholder="What are you looking for?" value={search} onChange={e => setSearch(e.target.value)} />
+                        <input type="text" className="form-control" id="searchTerm" name="searchTerm" placeholder="What are you looking for?" value={searchTerm} onChange={e => updateSearchTerm(e.target.value)} />
                     </div>
                     <div className="col-4">
                         <button type="submit" className="btn btn-primary px-5 py-2">Search</button>
@@ -94,11 +100,11 @@ const HomePage = () => {
                     <p>Total items found: {totalItems}</p>
                     <ul>
                         {searchResults.map(b => (
-                            <Link to={`/details/id=${b.id}/search=${search}`} className="text-decoration-none" key={b.id}>
+                            <Link to={`/details/id=${b.id}`} className="text-decoration-none" key={b.id} id={b.id}>
                                 <li className="card w-100 my-3">
                                     <div className="row">
                                         <div className="col-4">
-                                            <img className="img-fluid rounded-start" src={b.imageLinks.thumbnail} alt={`Thumbnail for ${b.title}`} />
+                                            <img className="img-fluid rounded-start" src={b.imageLink} alt={`Thumbnail for ${b.title}`} />
                                         </div>
                                         <div className="col-8">
                                             <div className="card-body">

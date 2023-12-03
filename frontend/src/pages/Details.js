@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Await, defer, useLoaderData } from "react-router";
 import parse from "html-react-parser";
 import { Link } from "react-router-dom";
+import noImage from "../assets/Image_not_available.png";
 
 const Details = () => {
     const { item } = useLoaderData();
@@ -13,11 +14,11 @@ const Details = () => {
                     <h4 className="text-center text-danger py-5">{item.errorMessage}</h4>
                 ) : (
                     <>
-                        <Link to="/" className="btn btn-secondary px-4 my-3">Back</Link>
+                        <Link to={`/#${item.id}`} className="btn btn-secondary px-4 my-3">Back</Link>
                         <div className="row my-3">
                             <div className="col">
                                 <h2 className="mb-3">{item.title}</h2>
-                                <img className="img-fluid" src={item.imageLinks.small || item.imageLinks.thumbnail} alt={`Cover for ${item.title}`} />
+                                <img className="img-fluid" src={item.imageLinks.small.replace("http", "https") || item.imageLinks.thumbnail.replace("http", "https")} alt={`Cover for ${item.title}`} />
                             </div>
                             <div className="col my-5">
                                 <div className="my-5">
@@ -82,6 +83,11 @@ const loadItem = async id => {
                 googleLink: resData.volumeInfo.infoLink
             };
 
+            if (!item.imageLinks.small && !item.imageLinks.thumbnail) {
+                item.imageLinks.small = noImage;
+            }
+
+            console.log(item.imageLinks);
             return item;
         } else {
             return { errorMessage: "Could not fetch details for selected item." };
@@ -101,11 +107,8 @@ const loadItem = async id => {
  */
 export const loader = async ({ req, params }) => {
     const id = params.id;
-    const search = params.search;
-
 
     return defer({
-        item: await loadItem(id),
-        search
+        item: await loadItem(id)
     });
 }

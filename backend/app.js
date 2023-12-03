@@ -7,7 +7,7 @@ require('dotenv').config();
 const authRoutes = require("./routes/auth");
 const favoritesRoutes = require("./routes/favorites");
 
-//config
+//creating app
 const app = express();
 
 //middlewares
@@ -38,5 +38,6 @@ app.use((error, req, res, next) => {
 mongoose.connect(process.env.MONGO_DB)
     .then(() => {
         app.listen(process.env.PORT || 8080);
+        console.log("listening...");
     })
     .catch(err => console.log(err));
