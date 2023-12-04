@@ -31,7 +31,7 @@ const Details = () => {
                                             {i.type.replace("_", "")} - {i.identifier}
                                         </p>
                                     })}
-                                    <a className="btn btn-primary" href={item.googleLink} target="_blank" rel="noreferrer">Buy on Google Play</a>
+                                    <a className="btn btn-primary" href={item.googleLink} target="_blank" rel="noreferrer">View on Google Play</a>
                                 </div>
                             </div>
                         </div>

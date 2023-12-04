@@ -2,13 +2,29 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const favoriteSchema = new Schema({
-    type: {
+    bookId: {
         type: String,
         required: true
     },
-    id: {
+    title: {
         type: String,
         required: true
+    },
+    authors: {
+        type: Array,
+        required: true
+    },
+    publishedDate: {
+        type: String,
+        required: true
+    },
+    identifiers: {
+        type: Array,
+        required: true
+    },
+    imageLink: {
+        type: String,
+        required: false
     },
     user: {
         type: Schema.Types.ObjectId,

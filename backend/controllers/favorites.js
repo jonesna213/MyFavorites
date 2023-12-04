@@ -17,13 +17,16 @@ exports.addFavorite = async (req, res, next) => {
         throw error;
     }
 
-    const type = req.body.type;
-    const id = req.body.id;
     const userId = req.userId;
+    const book = req.body.book;
 
     const newFavorite = new Favorite({
-        type,
-        id,
+        bookId: book.bookId,
+        authors: book.authors,
+        imageLink: book.imageLink,
+        identifiers: book.identifiers,
+        publishedDate: book.publishedDate,
+        title: book.title,
         user: userId
     });
     

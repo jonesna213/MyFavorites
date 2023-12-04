@@ -6,6 +6,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Details, { loader as itemDetailLoader } from "./pages/Details";
 import { createContext, useContext, useState } from "react";
+import Favorites from "./pages/Favorites";
 
 const SearchContext = createContext();
 
@@ -32,6 +33,7 @@ const routes = [
             { path: "/signin", element: <SignIn /> },
             { path: "/signup", element: <SignUp /> },
             { path: "/details/:id", element: <Details />, loader: itemDetailLoader },
+            { path: "/favorites", element: <Favorites /> }
         ],
     }
 ];

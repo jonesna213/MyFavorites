@@ -15,9 +15,7 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
      * @returns technically nothing but, sets the required states
      */
     const searchHandler = async event => {
-        if (event) {
-            event.preventDefault();
-        }
+        event.preventDefault();
         setSearching(true);
         setError(false);
 
@@ -31,32 +29,27 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
 
             const resData = await result.json();
 
-            console.log(resData);
-
             if (result.ok) {
                 updateTotalItems(resData.totalItems);
                 updateSearchResults(resData.items.map(i => {
 
                     let imageLink;
+
                     if (!i.volumeInfo.imageLinks || !i.volumeInfo.imageLinks.thumbnail) {
-                        imageLink = noImage;
+                        imageLink = null;
                     } else {
                         imageLink = i.volumeInfo.imageLinks.thumbnail
                     }
 
                     return {
                         id: i.id,
-                        kind: "book",
-                        selfLink: i.selfLink,
-                        authors: [...i.volumeInfo.authors || []],
+                        authors: i.volumeInfo.authors || [],
                         imageLink,
                         identifiers: i.volumeInfo.industryIdentifiers || [],
                         publishedDate: i.volumeInfo.publishedDate,
                         title: i.volumeInfo.title
                     };
                 }));
-
-                console.log(searchResults);
 
                 setSearching(false);
                 return;
@@ -74,8 +67,26 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
         }
     }
 
-    const addFavoriteHandler = () => {
+    /**
+     * 
+     * @param {string} book the book to add to favorites 
+     */
+    const addFavoriteHandler = async book => {
 
+        try {
+            const result = await fetch("http://localhost:8080/addFavorite", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    book
+                })
+            });
+        } catch (err) {
+            console.log(err);
+            return;
+        }
     }
 
     return (
@@ -100,13 +111,14 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
                     <p>Total items found: {totalItems}</p>
                     <ul>
                         {searchResults.map(b => (
-                            <Link to={`/details/id=${b.id}`} className="text-decoration-none" key={b.id} id={b.id}>
-                                <li className="card w-100 my-3">
-                                    <div className="row">
-                                        <div className="col-4">
-                                            <img className="img-fluid rounded-start" src={b.imageLink} alt={`Thumbnail for ${b.title}`} />
-                                        </div>
-                                        <div className="col-8">
+
+                            <li className="card w-100 my-3">
+                                <div className="row">
+                                    <div className="col-3">
+                                        <img className="img-fluid rounded-start" src={b.imageLink || noImage} alt={`Thumbnail for ${b.title}`} />
+                                    </div>
+                                    <div className="col-6">
+                                        <Link to={`/details/id=${b.id}`} className="text-decoration-none text-black" key={b.id} id={b.id}>
                                             <div className="card-body">
                                                 <h5 className="card-title">{b.title}</h5>
                                                 {b.authors.length > 1 && (
@@ -122,11 +134,15 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
                                                     </>
                                                 })}</small></p>
                                             </div>
-                                        </div>
+                                        </Link>
                                     </div>
+                                    <div className="col-3 d-flex align-items-center justify-content-center">
+                                        <button className="btn btn-success" onClick={() => addFavoriteHandler(b)}>Add to Favorites</button>
+                                    </div>
+                                </div>
 
-                                </li>
-                            </Link>
+                            </li>
+
                         ))}
                     </ul>
                 </section>

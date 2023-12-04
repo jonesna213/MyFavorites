@@ -1,0 +1,3 @@
+- Fix back button from details. doesn't go back to clicked item.
+- Setup Favorites page
+- Get add favorite button added/working
