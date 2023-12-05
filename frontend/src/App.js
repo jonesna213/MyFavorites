@@ -12,7 +12,7 @@ const SearchContext = createContext();
 
 // HomePage component with access to context
 const HomePageWithContext = () => {
-    const { searchTerm, updateSearchTerm, searchResults, updateSearchResults, totalItems, updateTotalItems } = useContext(SearchContext);
+    const { searchTerm, updateSearchTerm, searchResults, updateSearchResults, totalItems, updateTotalItems, favorites, updateFavorites } = useContext(SearchContext);
 
     return <HomePage
         searchTerm={searchTerm}
@@ -20,7 +20,9 @@ const HomePageWithContext = () => {
         searchResults={searchResults}
         updateSearchResults={updateSearchResults}
         totalItems={totalItems}
-        updateTotalItems={updateTotalItems} />;
+        updateTotalItems={updateTotalItems}
+        favorites={favorites}
+        updateFavorites={updateFavorites} />;
 };
 
 const routes = [
@@ -42,6 +44,7 @@ const App = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [totalItems, setTotalItems] = useState();
+    const [favorites, setFavorites] = useState([]);
 
     const updateSearchTerm = newSearchTerm => {
         setSearchTerm(newSearchTerm);
@@ -55,13 +58,20 @@ const App = () => {
         setTotalItems(newAmountOfItems);
     }
 
+    const updateFavorites = newFavorites => {
+        setFavorites(newFavorites);
+        console.log("From app", favorites);
+    }
+
     const contextValue = {
         searchTerm,
         updateSearchTerm,
         searchResults,
         updateSearchResults,
         totalItems,
-        updateTotalItems
+        updateTotalItems,
+        favorites,
+        updateFavorites
     };
 
     return (

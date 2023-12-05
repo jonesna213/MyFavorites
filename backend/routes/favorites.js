@@ -8,6 +8,6 @@ const router = express.Router();
 
 router.post("/addFavorite", isAuth, favoritesController.addFavorite);
 
-router.get("/getFavorites/:userId", isAuth);
+router.get("/getFavorites", isAuth, favoritesController.getFavorites);
 
 module.exports = router;

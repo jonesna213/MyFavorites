@@ -21,7 +21,7 @@ exports.addFavorite = async (req, res, next) => {
     const book = req.body.book;
 
     const newFavorite = new Favorite({
-        bookId: book.bookId,
+        bookId: book.id,
         authors: book.authors,
         imageLink: book.imageLink,
         identifiers: book.identifiers,
@@ -33,14 +33,15 @@ exports.addFavorite = async (req, res, next) => {
     try {
         await newFavorite.save();
 
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).populate("favorites");
 
         user.favorites.push(newFavorite);
         
         await user.save();
 
         res.status(201).json({
-            message: "Successfully added favorite"
+            message: "Successfully added favorite",
+            updatedFavorites: user.favorites 
         });
 
     } catch (err) {

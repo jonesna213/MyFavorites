@@ -1,3 +1,4 @@
 - Fix back button from details. doesn't go back to clicked item.
 - Setup Favorites page
-- Get add favorite button added/working
+- Get add/remove favorite button added/working
+- auto sign out after 1 hour

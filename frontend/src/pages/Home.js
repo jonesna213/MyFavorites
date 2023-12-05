@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styles from "./css/Home.module.css";
 import noImage from "../assets/Image_not_available.png";
 
-const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchResults, totalItems, updateTotalItems }) => {
+const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchResults, totalItems, updateTotalItems, favorites, updateFavorites }) => {
     const [error, setError] = useState();
     const [searching, setSearching] = useState();
     let startIndex = 0;
@@ -72,17 +72,25 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
      * @param {string} book the book to add to favorites 
      */
     const addFavoriteHandler = async book => {
+        const token = localStorage.getItem("token");
 
         try {
-            const result = await fetch("http://localhost:8080/addFavorite", {
+            const result = await fetch("http://localhost:8080/favorites/addFavorite", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token
                 },
                 body: JSON.stringify({
                     book
                 })
             });
+            const data = await result.json();
+            console.log("updated fav", data.updatedFavorites);
+            updateFavorites(data.updatedFavorites);
+            console.log("From homepage ", favorites);
+
+            
         } catch (err) {
             console.log(err);
             return;
@@ -137,7 +145,12 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
                                         </Link>
                                     </div>
                                     <div className="col-3 d-flex align-items-center justify-content-center">
-                                        <button className="btn btn-success" onClick={() => addFavoriteHandler(b)}>Add to Favorites</button>
+                                        {favorites.map(i => i.bookId).includes(b.id) ? (
+                                            <button className="btn btn-danger" onClick={() => addFavoriteHandler(b)}>Remove from Favorites</button>
+                                        ) : (
+                                            <button className="btn btn-success" onClick={() => addFavoriteHandler(b)}>Add to Favorites</button>
+                                        )}
+                                        
                                     </div>
                                 </div>
 
