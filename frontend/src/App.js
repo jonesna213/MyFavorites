@@ -5,9 +5,8 @@ import HomePage from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Details, { loader as itemDetailLoader } from "./pages/Details";
-import { useState } from "react";
 import Favorites from "./pages/Favorites";
-import { Context } from "./store/Context";
+import ContextProvider from "./store/Context";
 
 const routes = [
     {
@@ -25,29 +24,11 @@ const routes = [
 ];
 
 const App = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [searchResults, setSearchResults] = useState([]);
-    const [totalItems, setTotalItems] = useState(null);
-    const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
-
-    const contextValue = {
-        searchTerm,
-        setSearchTerm,
-        searchResults,
-        setSearchResults,
-        totalItems,
-        setTotalItems,
-        user,
-        setUser,
-        token,
-        setToken
-    };
 
     return (
-        <Context.Provider value={contextValue}>
+        <ContextProvider>
             <RouterProvider router={createBrowserRouter(routes)} />
-        </Context.Provider>
+        </ContextProvider>
     );
 };
 
