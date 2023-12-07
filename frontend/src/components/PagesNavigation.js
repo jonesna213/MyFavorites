@@ -1,10 +1,14 @@
 import { NavLink } from "react-router-dom";
 import styles from "../pages/css/Header.module.css";
+import { useContext } from "react";
+import { Context } from "../store/Context";
 
-const PagesNavigation = props => {
+const PagesNavigation = () => {
+    const ctx = useContext(Context);
+
     return (
         <>
-            {props.isLoggedIn ? (
+            {ctx.user ? (
                 <>
                     <li className="nav-item">
                         <NavLink to="/" className={({ isActive }) => isActive ? styles.links + " " + styles.active : styles.links} end>Home</NavLink>

@@ -5,25 +5,9 @@ import HomePage from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Details, { loader as itemDetailLoader } from "./pages/Details";
-import { createContext, useContext, useState } from "react";
+import { useState } from "react";
 import Favorites from "./pages/Favorites";
-
-const SearchContext = createContext();
-
-// HomePage component with access to context
-const HomePageWithContext = () => {
-    const { searchTerm, updateSearchTerm, searchResults, updateSearchResults, totalItems, updateTotalItems, favorites, updateFavorites } = useContext(SearchContext);
-
-    return <HomePage
-        searchTerm={searchTerm}
-        updateSearchTerm={updateSearchTerm}
-        searchResults={searchResults}
-        updateSearchResults={updateSearchResults}
-        totalItems={totalItems}
-        updateTotalItems={updateTotalItems}
-        favorites={favorites}
-        updateFavorites={updateFavorites} />;
-};
+import { Context } from "./store/Context";
 
 const routes = [
     {
@@ -31,7 +15,7 @@ const routes = [
         element: <RootLayout />,
         errorElement: <ErrorPage />,
         children: [
-            { index: true, element: <HomePageWithContext /> },
+            { index: true, element: <HomePage /> },
             { path: "/signin", element: <SignIn /> },
             { path: "/signup", element: <SignUp /> },
             { path: "/details/:id", element: <Details />, loader: itemDetailLoader },
@@ -43,41 +27,27 @@ const routes = [
 const App = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
-    const [totalItems, setTotalItems] = useState();
-    const [favorites, setFavorites] = useState([]);
-
-    const updateSearchTerm = newSearchTerm => {
-        setSearchTerm(newSearchTerm);
-    };
-
-    const updateSearchResults = newSearchResults => {
-        setSearchResults(newSearchResults);
-    };
-
-    const updateTotalItems = newAmountOfItems => {
-        setTotalItems(newAmountOfItems);
-    }
-
-    const updateFavorites = newFavorites => {
-        setFavorites(newFavorites);
-        console.log("From app", favorites);
-    }
+    const [totalItems, setTotalItems] = useState(null);
+    const [user, setUser] = useState(null);
+    const [token, setToken] = useState(null);
 
     const contextValue = {
         searchTerm,
-        updateSearchTerm,
+        setSearchTerm,
         searchResults,
-        updateSearchResults,
+        setSearchResults,
         totalItems,
-        updateTotalItems,
-        favorites,
-        updateFavorites
+        setTotalItems,
+        user,
+        setUser,
+        token,
+        setToken
     };
 
     return (
-        <SearchContext.Provider value={contextValue}>
+        <Context.Provider value={contextValue}>
             <RouterProvider router={createBrowserRouter(routes)} />
-        </SearchContext.Provider>
+        </Context.Provider>
     );
 };
 

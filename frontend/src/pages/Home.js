@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./css/Home.module.css";
 import noImage from "../assets/Image_not_available.png";
+import { Context } from "../store/Context";
 
-const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchResults, totalItems, updateTotalItems, favorites, updateFavorites }) => {
+const HomePage = () => {
     const [error, setError] = useState();
     const [searching, setSearching] = useState();
     let startIndex = 0;
+
+    const ctx = useContext(Context);
+
+    console.log(ctx);
 
     /**
      * Runs when the search button is clicked. Takes input then searches api with the passed in search term.
@@ -19,7 +24,7 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
         setSearching(true);
         setError(false);
 
-        const search = searchTerm.trim().replace(" ", "%20");
+        const search = ctx.searchTerm.trim().replace(" ", "%20");
 
         const searchType = "intitle"; //get from dropdown thing
         const maxResults = 20;
@@ -30,8 +35,8 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
             const resData = await result.json();
 
             if (result.ok) {
-                updateTotalItems(resData.totalItems);
-                updateSearchResults(resData.items.map(i => {
+                ctx.setTotalItems(resData.totalItems);
+                ctx.setSearchResults(resData.items.map(i => {
 
                     let imageLink;
 
@@ -67,30 +72,33 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
         }
     }
 
-    /**
-     * 
-     * @param {string} book the book to add to favorites 
-     */
-    const addFavoriteHandler = async book => {
-        const token = localStorage.getItem("token");
+    const favoritesHandler = async (book, type) => {
+        let url = "";
+
+        if (type === "remove") {
+            url = "http://localhost:8080/favorites/removeFavorite";
+        } else if (type === "add") {
+            url = "http://localhost:8080/favorites/addFavorite";
+        }
 
         try {
-            const result = await fetch("http://localhost:8080/favorites/addFavorite", {
+            const result = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: "Bearer " + token
+                    Authorization: "Bearer " + ctx.token
                 },
                 body: JSON.stringify({
                     book
                 })
             });
             const data = await result.json();
-            console.log("updated fav", data.updatedFavorites);
-            updateFavorites(data.updatedFavorites);
-            console.log("From homepage ", favorites);
 
-            
+            if (result.ok) {
+                const updatedUser = ctx.user;
+                updatedUser.favorites = data.updatedFavorites;
+                ctx.setUser(updatedUser);
+            }
         } catch (err) {
             console.log(err);
             return;
@@ -104,7 +112,7 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
                     {error && <p className="text-center text-danger mb-5">An error has occurred. Please try again later, we are sorry for the inconvenience.</p>}
 
                     <div className="col-8">
-                        <input type="text" className="form-control" id="searchTerm" name="searchTerm" placeholder="What are you looking for?" value={searchTerm} onChange={e => updateSearchTerm(e.target.value)} />
+                        <input type="text" className="form-control" id="searchTerm" name="searchTerm" placeholder="What are you looking for?" value={ctx.searchTerm} onChange={e => ctx.setSearchTerm(e.target.value)} />
                     </div>
                     <div className="col-4">
                         <button type="submit" className="btn btn-primary px-5 py-2">Search</button>
@@ -114,11 +122,11 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
                 </form>
             </section>
 
-            {searchResults.length > 0 ? (
+            {ctx.searchResults.length > 0 ? (
                 <section>
-                    <p>Total items found: {totalItems}</p>
+                    <p>Total items found: {ctx.totalItems}</p>
                     <ul>
-                        {searchResults.map(b => (
+                        {ctx.searchResults.map(b => (
 
                             <li className="card w-100 my-3">
                                 <div className="row">
@@ -145,12 +153,12 @@ const HomePage = ({ searchTerm, updateSearchTerm, searchResults, updateSearchRes
                                         </Link>
                                     </div>
                                     <div className="col-3 d-flex align-items-center justify-content-center">
-                                        {favorites.map(i => i.bookId).includes(b.id) ? (
-                                            <button className="btn btn-danger" onClick={() => addFavoriteHandler(b)}>Remove from Favorites</button>
+                                        {ctx.user.favorites.map(i => i.bookId).includes(b.id) ? (
+                                            <button className="btn btn-danger" onClick={() => favoritesHandler(b, "remove")}>Remove from Favorites</button>
                                         ) : (
-                                            <button className="btn btn-success" onClick={() => addFavoriteHandler(b)}>Add to Favorites</button>
+                                            <button className="btn btn-success" onClick={() => favoritesHandler(b, "add")}>Add to Favorites</button>
                                         )}
-                                        
+
                                     </div>
                                 </div>
 

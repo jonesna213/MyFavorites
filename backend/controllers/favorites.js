@@ -52,6 +52,38 @@ exports.addFavorite = async (req, res, next) => {
     }
 }
 
+exports.removeFavorite = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const error = new Error("Validation failed, entered data is incorrect.");
+        error.statusCode = 422;
+        error.data = errors.array();
+        throw error;
+    }
+
+    const userId = req.userId;
+    const book = req.body.book;
+    
+    try {
+        const user = await User.findById(userId).populate("favorites");
+
+        user.favorites.filter(f => f.bookId !== book.bookId);
+        
+        await user.save();
+
+        res.status(201).json({
+            message: "Successfully removed favorite",
+            updatedFavorites: user.favorites 
+        });
+
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+
 exports.getFavorites = async (req, res, next) => {
 
 }

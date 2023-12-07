@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { Context } from "../store/Context";
+import { useNavigate } from "react-router";
 
 const SignIn = () => {
     const [loggingInMessage, setLoggingInMessage] = useState(false);
     const [error, setError] = useState(false);
     const [unexpectedError, setUnexpectedError] = useState(false);
+    const navigate = useNavigate();
+    const ctx = useContext(Context);
 
     /**
      * For logging the user in. Takes the inputs and calls the backend api.
@@ -34,11 +38,10 @@ const SignIn = () => {
             const resData = await result.json();
 
             if (result.ok) {
-                localStorage.setItem("userId", resData.userId);
-                localStorage.setItem("token", resData.token);
-                localStorage.setItem("isLoggedIn", true);
                 setLoggingInMessage(false);
-                window.location.href = "/";         //Maybe replace later. ran into problem with navigation not updating. this solves it though.
+                ctx.setToken(resData.token);
+                ctx.setUser(resData.user);
+                navigate("/");
                 return;
             } else {
                 setLoggingInMessage(false);

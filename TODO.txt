@@ -2,3 +2,7 @@
 - Setup Favorites page
 - Get add/remove favorite button added/working
 - auto sign out after 1 hour
+- move context up a level?
+-
+
+-Switch localstorage to context

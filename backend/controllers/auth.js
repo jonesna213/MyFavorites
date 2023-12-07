@@ -63,7 +63,7 @@ exports.login = async (req, res, next) => {
     const password = req.body.password;
 
     try {
-        const user = await User.findOne({ email: email });
+        const user = await User.findOne({ email: email }).populate("favorites");
         if (!user) {
             const error = new Error("Invalid Credentials.");
             error.statusCode = 401;
@@ -84,7 +84,7 @@ exports.login = async (req, res, next) => {
 
         res.status(200).json({
             token,
-            userId: user._id.toString()
+            user
         });
 
     } catch (err) {
