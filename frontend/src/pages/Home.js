@@ -11,8 +11,6 @@ const HomePage = () => {
 
     const ctx = useContext(Context);
 
-    console.log(ctx);
-
     /**
      * Runs when the search button is clicked. Takes input then searches api with the passed in search term.
      * 
@@ -86,7 +84,7 @@ const HomePage = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: "Bearer " + ctx.token
+                    Authorization: "Bearer " + ctx.user.token
                 },
                 body: JSON.stringify({
                     book

@@ -12,8 +12,16 @@ const ContextProvider = ({children}) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [totalItems, setTotalItems] = useState(null);
-    const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
+    const [user, updateUser] = useState(JSON.parse(localStorage.getItem("userInfo")) || null);
+
+    const setUser = newUser => {
+        updateUser(newUser);
+        if (newUser === null) {
+            localStorage.removeItem("userInfo");
+        } else {
+            localStorage.setItem("userInfo", JSON.stringify(newUser));
+        }
+    }
 
     const contextValue = {
         searchTerm,
@@ -23,9 +31,7 @@ const ContextProvider = ({children}) => {
         totalItems,
         setTotalItems,
         user,
-        setUser,
-        token,
-        setToken
+        setUser
     };
 
     return (

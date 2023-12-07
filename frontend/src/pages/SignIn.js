@@ -39,8 +39,11 @@ const SignIn = () => {
 
             if (result.ok) {
                 setLoggingInMessage(false);
-                ctx.setToken(resData.token);
-                ctx.setUser(resData.user);
+
+                const user = resData.user;
+                user.token = resData.token;
+                
+                ctx.setUser(user);
                 navigate("/");
                 return;
             } else {

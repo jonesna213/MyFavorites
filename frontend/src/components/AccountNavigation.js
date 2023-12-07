@@ -8,8 +8,7 @@ const AccountNavigation = () => {
 
     //Handles logging a user out
     const logoutHandler = () => {
-        ctx.updateUser(null);
-        ctx.updateToken(null);
+        ctx.setUser(null);
     }
 
     return (

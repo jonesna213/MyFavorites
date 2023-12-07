@@ -24,7 +24,7 @@ const routes = [
 ];
 
 const App = () => {
-
+    
     return (
         <ContextProvider>
             <RouterProvider router={createBrowserRouter(routes)} />
