@@ -93,7 +93,7 @@ const HomePage = () => {
             const data = await result.json();
 
             if (result.ok) {
-                const updatedUser = ctx.user;
+                const updatedUser = { ...ctx.user };
                 updatedUser.favorites = data.updatedFavorites;
                 ctx.setUser(updatedUser);
             }

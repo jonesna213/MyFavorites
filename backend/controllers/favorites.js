@@ -63,11 +63,12 @@ exports.removeFavorite = async (req, res, next) => {
 
     const userId = req.userId;
     const book = req.body.book;
-    
     try {
         const user = await User.findById(userId).populate("favorites");
-
-        user.favorites.filter(f => f.bookId !== book.bookId);
+        
+        user.favorites = user.favorites.filter(f => {
+            return f.bookId.toString() !== book.id
+        });
         
         await user.save();
 
