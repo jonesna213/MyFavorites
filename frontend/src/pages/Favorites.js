@@ -11,9 +11,9 @@ const Favorites = () => {
             {ctx.user.favorites.length > 0 ? (
                 <>
                     <h1 className="text-center my-3">Your Favorites</h1>
-                    <ul>
+                    <ul className="my-5">
                         {ctx.user.favorites.map(b => (
-                            <li className="card w-100 my-3" key={b.bookId}>
+                            <li className="card w-75 mx-auto my-3" key={b.bookId}>
                                 <div className="row">
                                     <div className="col-3">
                                         <img className="img-fluid rounded-start" src={b.imageLink || noImage} alt={`Thumbnail for ${b.title}`} />

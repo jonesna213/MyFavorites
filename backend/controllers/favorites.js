@@ -20,28 +20,31 @@ exports.addFavorite = async (req, res, next) => {
     const userId = req.userId;
     const book = req.body.book;
 
-    const newFavorite = new Favorite({
-        bookId: book.bookId,
-        authors: book.authors,
-        imageLink: book.imageLink,
-        identifiers: book.identifiers,
-        publishedDate: book.publishedDate,
-        title: book.title,
-        user: userId
-    });
-    
     try {
-        await newFavorite.save();
+        let favorite = await Favorite.findOne({"bookId" : book.bookId});
+        if (!favorite) {
+            favorite = new Favorite({
+                bookId: book.bookId,
+                authors: book.authors,
+                imageLink: book.imageLink,
+                identifiers: book.identifiers,
+                publishedDate: book.publishedDate,
+                title: book.title,
+                user: userId
+            });
+
+            await favorite.save();
+        }
 
         const user = await User.findById(userId).populate("favorites");
 
-        user.favorites.push(newFavorite);
-        
+        user.favorites.push(favorite);
+
         await user.save();
 
         res.status(201).json({
             message: "Successfully added favorite",
-            updatedFavorites: user.favorites 
+            updatedFavorites: user.favorites
         });
 
     } catch (err) {
@@ -68,12 +71,12 @@ exports.removeFavorite = async (req, res, next) => {
         const user = await User.findById(userId).populate("favorites");
 
         user.favorites = user.favorites.filter(f => f.bookId.toString() !== book.bookId);
-        
+
         await user.save();
 
         res.status(201).json({
             message: "Successfully removed favorite",
-            updatedFavorites: user.favorites 
+            updatedFavorites: user.favorites
         });
 
     } catch (err) {
