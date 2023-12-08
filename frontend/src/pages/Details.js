@@ -5,8 +5,13 @@ import { Link } from "react-router-dom";
 import noImage from "../assets/Image_not_available.png";
 
 const Details = () => {
-    const { item } = useLoaderData();
-    console.log(item);
+    const { item, returnTo } = useLoaderData();
+
+    let url = "/";
+    if (returnTo === "favorites") {
+        url = "/favorites";
+    }
+
     return (
         <Suspense fallback={<p className="text-center">Loading...</p>}>
             <Await resolve={item}>
@@ -14,7 +19,7 @@ const Details = () => {
                     <h4 className="text-center text-danger py-5">{item.errorMessage}</h4>
                 ) : (
                     <>
-                        <Link to={`/#${item.id}`} className="btn btn-secondary px-4 my-3">Back</Link>
+                        <Link to={`${url}#${item.id}`} className="btn btn-secondary px-4 my-3">Back</Link>
                         <div className="row my-3">
                             <div className="col">
                                 <h2 className="mb-3">{item.title}</h2>
@@ -59,14 +64,10 @@ export default Details;
  * @returns either and object of the item or a object containing an error message
  */
 const loadItem = async id => {
-    const searchId = id.split("=")[1];
-
     try {
-        const result = await fetch(`https://www.googleapis.com/books/v1/volumes/${searchId}`);
+        const result = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}`);
 
         const resData = await result.json();
-
-        console.log(resData);
 
         if (result.ok) {
             const item = {
@@ -87,7 +88,6 @@ const loadItem = async id => {
                 item.imageLinks.small = noImage;
             }
 
-            console.log(item.imageLinks);
             return item;
         } else {
             return { errorMessage: "Could not fetch details for selected item." };
@@ -105,10 +105,11 @@ const loadItem = async id => {
  * @param {*} params 
  * @returns an object containing the item and search term
  */
-export const loader = async ({ req, params }) => {
-    const id = params.id;
+export const loader = async ({ request, params }) => {
+    const {id, returnTo} = params;
 
     return defer({
-        item: await loadItem(id)
+        item: await loadItem(id),
+        returnTo
     });
 }

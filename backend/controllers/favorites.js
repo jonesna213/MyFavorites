@@ -21,7 +21,7 @@ exports.addFavorite = async (req, res, next) => {
     const book = req.body.book;
 
     const newFavorite = new Favorite({
-        bookId: book.id,
+        bookId: book.bookId,
         authors: book.authors,
         imageLink: book.imageLink,
         identifiers: book.identifiers,
@@ -63,12 +63,11 @@ exports.removeFavorite = async (req, res, next) => {
 
     const userId = req.userId;
     const book = req.body.book;
+
     try {
         const user = await User.findById(userId).populate("favorites");
-        
-        user.favorites = user.favorites.filter(f => {
-            return f.bookId.toString() !== book.id
-        });
+
+        user.favorites = user.favorites.filter(f => f.bookId.toString() !== book.bookId);
         
         await user.save();
 
@@ -83,8 +82,4 @@ exports.removeFavorite = async (req, res, next) => {
         }
         next(err);
     }
-}
-
-exports.getFavorites = async (req, res, next) => {
-
 }

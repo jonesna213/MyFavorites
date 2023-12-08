@@ -45,7 +45,7 @@ const HomePage = () => {
                     }
 
                     return {
-                        id: i.id,
+                        bookId: i.id,
                         authors: i.volumeInfo.authors || [],
                         imageLink,
                         identifiers: i.volumeInfo.industryIdentifiers || [],
@@ -66,39 +66,6 @@ const HomePage = () => {
             console.log(err);
             setSearching(false);
             setError(true);
-            return;
-        }
-    }
-
-    const favoritesHandler = async (book, type) => {
-        let url = "";
-
-        if (type === "remove") {
-            url = "http://localhost:8080/favorites/removeFavorite";
-        } else if (type === "add") {
-            url = "http://localhost:8080/favorites/addFavorite";
-        }
-
-        try {
-            const result = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + ctx.user.token
-                },
-                body: JSON.stringify({
-                    book
-                })
-            });
-            const data = await result.json();
-
-            if (result.ok) {
-                const updatedUser = { ...ctx.user };
-                updatedUser.favorites = data.updatedFavorites;
-                ctx.setUser(updatedUser);
-            }
-        } catch (err) {
-            console.log(err);
             return;
         }
     }
@@ -126,13 +93,13 @@ const HomePage = () => {
                     <ul>
                         {ctx.searchResults.map(b => (
 
-                            <li className="card w-100 my-3">
+                            <li className="card w-100 my-3" key={b.bookId} id={b.bookId}>
                                 <div className="row">
                                     <div className="col-3">
                                         <img className="img-fluid rounded-start" src={b.imageLink || noImage} alt={`Thumbnail for ${b.title}`} />
                                     </div>
                                     <div className="col-6">
-                                        <Link to={`/details/id=${b.id}`} className="text-decoration-none text-black" key={b.id} id={b.id}>
+                                        <Link to={`/details/${b.bookId}/home`} className="text-decoration-none text-black">
                                             <div className="card-body">
                                                 <h5 className="card-title">{b.title}</h5>
                                                 {b.authors.length > 1 && (
@@ -150,18 +117,17 @@ const HomePage = () => {
                                             </div>
                                         </Link>
                                     </div>
-                                    <div className="col-3 d-flex align-items-center justify-content-center">
-                                        {ctx.user.favorites.map(i => i.bookId).includes(b.id) ? (
-                                            <button className="btn btn-danger" onClick={() => favoritesHandler(b, "remove")}>Remove from Favorites</button>
-                                        ) : (
-                                            <button className="btn btn-success" onClick={() => favoritesHandler(b, "add")}>Add to Favorites</button>
-                                        )}
-
-                                    </div>
+                                    {ctx.user && (
+                                        <div className="col-3 d-flex align-items-center justify-content-center">
+                                            {ctx.user.favorites.map(i => i.bookId).includes(b.bookId) ? (
+                                                <button className="btn btn-danger" onClick={() => ctx.favoritesHandler(b, "remove")}>Remove from Favorites</button>
+                                            ) : (
+                                                <button className="btn btn-success" onClick={() => ctx.favoritesHandler(b, "add")}>Add to Favorites</button>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
-
                             </li>
-
                         ))}
                     </ul>
                 </section>

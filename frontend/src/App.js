@@ -17,7 +17,7 @@ const routes = [
             { index: true, element: <HomePage /> },
             { path: "/signin", element: <SignIn /> },
             { path: "/signup", element: <SignUp /> },
-            { path: "/details/:id", element: <Details />, loader: itemDetailLoader },
+            { path: "/details/:id/:returnTo", element: <Details />, loader: itemDetailLoader },
             { path: "/favorites", element: <Favorites /> }
         ],
     }

@@ -1,3 +1,2 @@
 - Fix back button from details. doesn't go back to clicked item.
-- Setup Favorites page
 - auto sign out after 1 hour

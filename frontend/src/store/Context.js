@@ -2,7 +2,6 @@ import { createContext, useState } from "react";
 
 export const Context = createContext({
     user: null,
-    token: null,
     searchTerm: "",
     searchResults: [],
     totalItems: null
@@ -23,6 +22,39 @@ const ContextProvider = ({children}) => {
         }
     }
 
+    const favoritesHandler = async (book, type) => {
+        let url = "";
+
+        if (type === "remove") {
+            url = "http://localhost:8080/favorites/removeFavorite";
+        } else if (type === "add") {
+            url = "http://localhost:8080/favorites/addFavorite";
+        }
+
+        try {
+            const result = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + user.token
+                },
+                body: JSON.stringify({
+                    book
+                })
+            });
+            const data = await result.json();
+
+            if (result.ok) {
+                const updatedUser = { ...user };
+                updatedUser.favorites = data.updatedFavorites;
+                setUser(updatedUser);
+            }
+        } catch (err) {
+            console.log(err);
+            return;
+        }
+    }
+
     const contextValue = {
         searchTerm,
         setSearchTerm,
@@ -31,7 +63,8 @@ const ContextProvider = ({children}) => {
         totalItems,
         setTotalItems,
         user,
-        setUser
+        setUser,
+        favoritesHandler
     };
 
     return (

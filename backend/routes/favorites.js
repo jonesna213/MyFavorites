@@ -10,6 +10,4 @@ router.post("/addFavorite", isAuth, favoritesController.addFavorite);
 
 router.post("/removeFavorite", isAuth, favoritesController.removeFavorite);
 
-router.get("/getFavorites", isAuth, favoritesController.getFavorites);
-
 module.exports = router;
