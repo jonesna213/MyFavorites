@@ -17,7 +17,7 @@ const PagesNavigation = () => {
                         <NavLink to="/favorites" className={({ isActive }) => isActive ? styles.links + " " + styles.active : styles.links}>Favorites</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink to="/recommendation" className={({ isActive }) => isActive ? styles.links + " " + styles.active : styles.links}>Get a Recommendation</NavLink>
+                        <NavLink to="/recommendations" className={({ isActive }) => isActive ? styles.links + " " + styles.active : styles.links}>Get Recommendations</NavLink>
                     </li>
                 </>
             ) : (

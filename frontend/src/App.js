@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp";
 import Details, { loader as itemDetailLoader } from "./pages/Details";
 import Favorites from "./pages/Favorites";
 import ContextProvider from "./store/Context";
+import Recommendations from "./pages/Recommendations";
 
 const routes = [
     {
@@ -18,13 +19,14 @@ const routes = [
             { path: "/signin", element: <SignIn /> },
             { path: "/signup", element: <SignUp /> },
             { path: "/details/:id/:returnTo", element: <Details />, loader: itemDetailLoader },
-            { path: "/favorites", element: <Favorites /> }
+            { path: "/favorites", element: <Favorites /> },
+            { path: "/recommendations", element: <Recommendations /> }
         ],
     }
 ];
 
 const App = () => {
-    
+
     return (
         <ContextProvider>
             <RouterProvider router={createBrowserRouter(routes)} />
