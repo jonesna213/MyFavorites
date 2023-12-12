@@ -8,8 +8,8 @@ const Details = () => {
     const { item, returnTo } = useLoaderData();
 
     let url = "/";
-    if (returnTo === "favorites") {
-        url = "/favorites";
+    if (returnTo !== "home") {
+        url = `/${returnTo}`;
     }
 
     return (

@@ -1,11 +1,13 @@
 import { useContext, useState } from "react";
 import { Context } from "../store/Context";
+import { Link } from "react-router-dom";
+import noImage from "../assets/Image_not_available.png";
 
 const genres = ["Mystery", "Science Fiction"];
 
 const Recommendations = () => {
     const ctx = useContext(Context);
-    const [recommendations, setRecommendations] = useState([{ title: "test1" }, { title: "test2" }, { title: "test3" }]);
+    const [recommendations, setRecommendations] = useState([]);
     const [checkedGenres, setCheckedGenres] = useState([]);
     const [checkedFavorites, setCheckedFavorites] = useState([]);
 
@@ -17,7 +19,7 @@ const Recommendations = () => {
         } else {
             updatedCheckedFavorites = updatedCheckedFavorites.filter(f => f.bookId !== book.bookId);
         }
-        
+
         setCheckedFavorites(updatedCheckedFavorites);
     }
 
@@ -51,15 +53,13 @@ const Recommendations = () => {
                 })
             });
 
-            setCheckedFavorites([]);
-            setCheckedGenres([]);
+            const data = await result.json();
 
-            // const data = await result.json();
+            if (result.ok) {
+                setRecommendations(data);
+            }
 
-            // if (result.ok) {
-                
-            //     return;
-            // }
+            return;
         } catch (err) {
             console.log(err);
             return;
@@ -68,7 +68,7 @@ const Recommendations = () => {
 
     return (
         <div className="row my-5 mx-3">
-            <section className="col">
+            <section className="col-4">
                 <h4 className="text-decoration-underline">Criteria</h4>
                 <div className="form-container">
                     <form onSubmit={handleSubmit}>
@@ -100,8 +100,33 @@ const Recommendations = () => {
                 <h4 className="text-decoration-underline">Recommendations</h4>
                 {recommendations.length > 0 ? (
                     <ul>
-                        {recommendations.map(r => (
-                            <li className="">{r.title}</li>
+                        {recommendations.map(b => (
+                            <li className="card w-100 my-3" key={b.bookId} id={b.bookId}>
+                                <div className="row">
+                                    <div className="col-3">
+                                        <img className="img-fluid rounded-start" src={b.imageLink || noImage} alt={`Thumbnail for ${b.title}`} />
+                                    </div>
+                                    <div className="col-6">
+                                        <Link to={`/details/${b.bookId}/recommendations`} className="text-decoration-none text-black">
+                                            <div className="card-body">
+                                                <h5 className="card-title">{b.title}</h5>
+                                                {b.authors.length > 1 && (
+                                                    <p className="card-text">Authors: {b.authors.join(", ")} <small className="ms-3 text-body-secondary">Published: {b.publishedDate}</small></p>
+                                                )}
+                                                {b.authors.length === 1 && (
+                                                    <p className="card-text">Author: {b.authors} <small className="ms-3 text-body-secondary">Published: {b.publishedDate}</small></p>
+                                                )}
+                                                <p className="card-text"><small className="text-body-secondary">{b.identifiers.map(i => {
+                                                    return <>
+                                                        {i.type.replace("_", "")}: {i.identifier}
+                                                        <br />
+                                                    </>
+                                                })}</small></p>
+                                            </div>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </li>
                         ))}
                     </ul>
                 ) : (

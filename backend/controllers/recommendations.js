@@ -23,7 +23,7 @@ exports.getRecommendation = async (req, res, next) => {
 
         return ` Title: ${s.title} - Author/s: ${authors}`;
     })
-    
+
     //creating openai object
     const openai = new OpenAI({
         apiKey: process.env.OPENAIAPIKEY
@@ -31,7 +31,7 @@ exports.getRecommendation = async (req, res, next) => {
 
     //Creating the messages object
     let messages = [
-        { role: "system", content: "Act as a librarian of sorts by recommending a list of 10 books based on the criteria described. Format your responses as the following: [{ title: title, author: author}]. This format describes an array of objects with two parameters, title and author. Include only this format, no spaces, no new lines. Just one long string of the specified JSON format." },
+        { role: "system", content: "Act as a librarian of sorts by recommending a list of 2 books based on the criteria described. Format your responses as the following: [{ title: title, author: author}]. This format describes an array of objects with two parameters, title and author. Include only this format, no spaces, no new lines. Just one long string of the specified JSON format." },
         { role: "user", content: `The recommendations should be similar to the following books: ${similarities}. The recommendations should be of the genre/s: ${genres}.` }
     ];
 
@@ -45,39 +45,37 @@ exports.getRecommendation = async (req, res, next) => {
 
         //transforming the response into JSON
         let data = JSON.parse(response.choices[0].message.content);
-
+        
         let recommendations = [];
 
         //Getting book information from google api so that the recommendations work with the rest of the application
-        data.forEach(async book => {
+        for (const book of data) {
             const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${book.title}+inauthor:${book.author}`);
             const resData = await res.json();
 
             if (res.ok) {
-                recommendations.push(resData.items.map(i => {
-                    let imageLink;
+                const id = resData.items[0].id;
+                const info = resData.items[0].volumeInfo;
+                let imageLink;
 
-                    if (!i.volumeInfo.imageLinks || !i.volumeInfo.imageLinks.thumbnail) {
-                        imageLink = null;
-                    } else {
-                        imageLink = i.volumeInfo.imageLinks.thumbnail
-                    }
+                if (!info.imageLinks || !info.imageLinks.thumbnail) {
+                    imageLink = null;
+                } else {
+                    imageLink = info.imageLinks.thumbnail
+                }
 
-                    return {
-                        bookId: i.id,
-                        authors: i.volumeInfo.authors || [],
-                        imageLink,
-                        identifiers: i.volumeInfo.industryIdentifiers || [],
-                        publishedDate: i.volumeInfo.publishedDate,
-                        title: i.volumeInfo.title
-                    };
-                }));
+                recommendations.push({
+                    bookId: id,
+                    authors: info.authors || [],
+                    imageLink,
+                    identifiers: info.industryIdentifiers || [],
+                    publishedDate: info.publishedDate,
+                    title: info.title
+                });
             }
-        });
+        }
 
-        console.log("Recs", recommendations);
-
-        //res.send(recommendations);
+        res.send(recommendations);
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
