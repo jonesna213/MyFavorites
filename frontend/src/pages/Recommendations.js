@@ -3,7 +3,6 @@ import { Context } from "../store/Context";
 
 const genres = ["Mystery", "Science Fiction"];
 
-
 const Recommendations = () => {
     const ctx = useContext(Context);
     const [recommendations, setRecommendations] = useState([{ title: "test1" }, { title: "test2" }, { title: "test3" }]);
@@ -34,13 +33,36 @@ const Recommendations = () => {
         setCheckedGenres(updatedCheckedGenres);
     }
 
-    const handleSubmit = event => {
+    const handleSubmit = async event => {
         event.preventDefault();
-        
-        if (checkedFavorites.length === 0 && checkedGenres.length === 0) {
-            //do random book
-        } else { 
-            
+
+        try {
+            const result = await fetch("http://localhost:8080/recommendations/getRecommendations", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + ctx.user.token
+                },
+                body: JSON.stringify({
+                    criteria: {
+                        similarities: checkedFavorites,
+                        genres: checkedGenres
+                    }
+                })
+            });
+
+            setCheckedFavorites([]);
+            setCheckedGenres([]);
+
+            // const data = await result.json();
+
+            // if (result.ok) {
+                
+            //     return;
+            // }
+        } catch (err) {
+            console.log(err);
+            return;
         }
     }
 
@@ -50,13 +72,6 @@ const Recommendations = () => {
                 <h4 className="text-decoration-underline">Criteria</h4>
                 <div className="form-container">
                     <form onSubmit={handleSubmit}>
-                        <div className="form-group my-4">
-                            <div className="form-check">
-                                <input type="checkbox" className="form-check-input" id="randomRadio" name="recommendationType" defaultChecked />
-                                <label className="form-check-label" htmlFor="randomRadio">Random</label>
-                            </div>
-                        </div>
-                        <p className="fw-bold">OR</p>
                         <div className="form-group my-4">
                             <p className="text-decoration-underline">Similar to:</p>
                             {ctx.user.favorites.map(f => (

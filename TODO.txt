@@ -1,3 +1,5 @@
 - Fix back button from details. doesn't go back to clicked item.
 - auto sign out after 1 hour
 - add pagination to search results
+- random and criteria recommendations 
+- recommendation page complete
