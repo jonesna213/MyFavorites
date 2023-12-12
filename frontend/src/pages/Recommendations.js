@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Context } from "../store/Context";
 import { Link } from "react-router-dom";
 import noImage from "../assets/Image_not_available.png";
+import Loading from "../components/Loading";
 
 const genres = ["Fiction", "Mystery/Thriller", "Science Fiction", "Fantasy", "Romance", "Historical Fiction", "Non-fiction", "Biography/Autobiography", "Self-help", "Horror", "Adventure", "Poetry", "Comedy/Humor", "Drama", "Young Adult (YA)", "Children's", "Crime/Noir", "Business/Finance", "Science/Nature", "Travel"];
 
@@ -9,6 +10,7 @@ const Recommendations = () => {
     const ctx = useContext(Context);
     const [checkedGenres, setCheckedGenres] = useState([]);
     const [checkedFavorites, setCheckedFavorites] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const similarChangeHandler = (book, checked) => {
         let updatedCheckedFavorites = checkedFavorites;
@@ -37,6 +39,8 @@ const Recommendations = () => {
     const handleSubmit = async event => {
         event.preventDefault();
 
+        setLoading(true);
+
         try {
             const result = await fetch("http://localhost:8080/recommendations/getRecommendations", {
                 method: "POST",
@@ -56,10 +60,9 @@ const Recommendations = () => {
 
             if (result.ok) {
                 ctx.setRecommendations(data);
-                ctx.setCriteria({ checkedGenres, checkedFavorites })
             }
-
-            return;
+            console.log("test");
+            setLoading(false);
         } catch (err) {
             console.log(err);
             return;
@@ -76,8 +79,8 @@ const Recommendations = () => {
                             <p className="text-decoration-underline">Similar to:</p>
                             {ctx.user.favorites.map(f => (
                                 <div className="form-check" key={f.bookId}>
-                                    <input type="checkbox" className="form-check-input" id="similarCheckbox1" onChange={e => similarChangeHandler(f, e.target.checked)} />
-                                    <label className="form-check-label" htmlFor="similarCheckbox1">{f.title}</label>
+                                    <input type="checkbox" className="form-check-input" id={`${f.bookId}Checkbox`} onChange={e => similarChangeHandler(f, e.target.checked)} />
+                                    <label className="form-check-label" htmlFor={`${f.bookId}Checkbox`}>{f.title}</label>
                                 </div>
                             ))}
                         </div>
@@ -119,9 +122,9 @@ const Recommendations = () => {
                     </form>
                 </div>
             </section>
-            <section className="col">
-                <h4 className="text-decoration-underline">Recommendations</h4>
-                {ctx.recommendations.length > 0 ? (
+            <section className="col d-flex flex-column align-items-center">
+                <h4 className="text-decoration-underline text-center">Recommendations</h4>
+                {ctx.recommendations.length > 0 && (
                     <ul>
                         {ctx.recommendations.map(b => (
                             <li className="card w-100 my-3" key={b.bookId} id={b.bookId}>
@@ -139,12 +142,12 @@ const Recommendations = () => {
                                                 {b.authors.length === 1 && (
                                                     <p className="card-text">Author: {b.authors} <small className="ms-3 text-body-secondary">Published: {b.publishedDate}</small></p>
                                                 )}
-                                                <p className="card-text"><small className="text-body-secondary">{b.identifiers.map(i => {
-                                                    return <>
+                                                <p className="card-text"><small className="text-body-secondary">{b.identifiers.map((i, index) => (
+                                                    <span key={index}>
                                                         {i.type.replace("_", "")}: {i.identifier}
                                                         <br />
-                                                    </>
-                                                })}</small></p>
+                                                    </span>
+                                                ))}</small></p>
                                             </div>
                                         </Link>
                                     </div>
@@ -152,7 +155,11 @@ const Recommendations = () => {
                             </li>
                         ))}
                     </ul>
-                ) : (
+                )}
+                {loading && (
+                    <Loading />
+                )}
+                {!loading && ctx.recommendations.length <= 0 && (
                     <p className="mt-4">Select criteria and press the button to get some recommendations</p>
                 )}
             </section>
