@@ -4,7 +4,8 @@ export const Context = createContext({
     user: null,
     searchTerm: "",
     searchResults: [],
-    totalItems: null
+    totalItems: null,
+    recommendations: []
 });
 
 const ContextProvider = ({children}) => {
@@ -12,6 +13,7 @@ const ContextProvider = ({children}) => {
     const [searchResults, setSearchResults] = useState([]);
     const [totalItems, setTotalItems] = useState(null);
     const [user, updateUser] = useState(JSON.parse(localStorage.getItem("userInfo")) || null);
+    const [recommendations, setRecommendations] = useState([]);
 
     const setUser = newUser => {
         updateUser(newUser);
@@ -64,7 +66,9 @@ const ContextProvider = ({children}) => {
         setTotalItems,
         user,
         setUser,
-        favoritesHandler
+        favoritesHandler,
+        recommendations,
+        setRecommendations
     };
 
     return (

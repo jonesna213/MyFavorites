@@ -28,12 +28,12 @@ const Favorites = () => {
                                                 {b.authors.length === 1 && (
                                                     <p className="card-text">Author: {b.authors} <small className="ms-3 text-body-secondary">Published: {b.publishedDate}</small></p>
                                                 )}
-                                                <p className="card-text"><small className="text-body-secondary">{b.identifiers.map(i => {
-                                                    return <>
+                                                <p className="card-text"><small className="text-body-secondary">{b.identifiers.map((i, index) => (
+                                                    <span key={index}>
                                                         {i.type.replace("_", "")}: {i.identifier}
                                                         <br />
-                                                    </>
-                                                })}</small></p>
+                                                    </span>
+                                                ))}</small></p>
                                             </div>
                                         </Link>
                                     </div>

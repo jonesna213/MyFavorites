@@ -31,7 +31,7 @@ exports.getRecommendation = async (req, res, next) => {
 
     //Creating the messages object
     let messages = [
-        { role: "system", content: "Act as a librarian of sorts by recommending a list of 2 books based on the criteria described. Format your responses as the following: [{ title: title, author: author}]. This format describes an array of objects with two parameters, title and author. Include only this format, no spaces, no new lines. Just one long string of the specified JSON format." },
+        { role: "system", content: "Act as a librarian of sorts by recommending a list of 10 books based on the criteria described. Format your responses as the following: [{ title: title, author: author}]. This format describes an array of objects with two parameters, title and author. Include only this format, no spaces, no new lines. Just one long string of the specified JSON format. In addition to this, if there is no criteria then give random recommendations." },
         { role: "user", content: `The recommendations should be similar to the following books: ${similarities}. The recommendations should be of the genre/s: ${genres}.` }
     ];
 

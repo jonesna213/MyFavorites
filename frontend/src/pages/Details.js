@@ -41,7 +41,7 @@ const Details = () => {
                             </div>
                         </div>
                         {item.description && (
-                            <div className="row">
+                            <div className="row mb-5">
                                 <div className="col">
                                     <h4>Description:</h4>
                                     {parse(item.description)}

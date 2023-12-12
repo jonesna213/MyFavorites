@@ -87,12 +87,11 @@ const HomePage = () => {
                 </form>
             </section>
 
-            {ctx.searchResults.length > 0 ? (
+            {ctx.searchResults.length > 0 && (
                 <section>
                     <p>Total items found: {ctx.totalItems}</p>
                     <ul>
                         {ctx.searchResults.map(b => (
-
                             <li className="card w-100 my-3" key={b.bookId} id={b.bookId}>
                                 <div className="row">
                                     <div className="col-3">
@@ -108,12 +107,12 @@ const HomePage = () => {
                                                 {b.authors.length === 1 && (
                                                     <p className="card-text">Author: {b.authors} <small className="ms-3 text-body-secondary">Published: {b.publishedDate}</small></p>
                                                 )}
-                                                <p className="card-text"><small className="text-body-secondary">{b.identifiers.map(i => {
-                                                    return <>
+                                                <p className="card-text"><small className="text-body-secondary">{b.identifiers.map((i, index) => (
+                                                    <span key={index}>
                                                         {i.type.replace("_", "")}: {i.identifier}
                                                         <br />
-                                                    </>
-                                                })}</small></p>
+                                                    </span>
+                                                ))}</small></p>
                                             </div>
                                         </Link>
                                     </div>
@@ -129,14 +128,6 @@ const HomePage = () => {
                                 </div>
                             </li>
                         ))}
-                    </ul>
-                </section>
-            ) : (
-                <section>
-                    <h1 className="text-center text-decoration-underline">Top favorites this week</h1>
-
-                    <ul className="w-75 mx-auto my-5 text-center list-unstyled">
-                        <li className="border rounded mx-auto py-1 w-75">Favorite #1 <a className="d-inline-block ms-5 border border-2 rounded bg-light p-1 text-decoration-none text-dark" href="/details/id=1">Details</a></li>
                     </ul>
                 </section>
             )}

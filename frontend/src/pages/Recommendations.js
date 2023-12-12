@@ -3,11 +3,10 @@ import { Context } from "../store/Context";
 import { Link } from "react-router-dom";
 import noImage from "../assets/Image_not_available.png";
 
-const genres = ["Mystery", "Science Fiction"];
+const genres = ["Fiction", "Mystery/Thriller", "Science Fiction", "Fantasy", "Romance", "Historical Fiction", "Non-fiction", "Biography/Autobiography", "Self-help", "Horror", "Adventure", "Poetry", "Comedy/Humor", "Drama", "Young Adult (YA)", "Children's", "Crime/Noir", "Business/Finance", "Science/Nature", "Travel"];
 
 const Recommendations = () => {
     const ctx = useContext(Context);
-    const [recommendations, setRecommendations] = useState([]);
     const [checkedGenres, setCheckedGenres] = useState([]);
     const [checkedFavorites, setCheckedFavorites] = useState([]);
 
@@ -56,7 +55,8 @@ const Recommendations = () => {
             const data = await result.json();
 
             if (result.ok) {
-                setRecommendations(data);
+                ctx.setRecommendations(data);
+                ctx.setCriteria({ checkedGenres, checkedFavorites })
             }
 
             return;
@@ -75,7 +75,7 @@ const Recommendations = () => {
                         <div className="form-group my-4">
                             <p className="text-decoration-underline">Similar to:</p>
                             {ctx.user.favorites.map(f => (
-                                <div className="form-check">
+                                <div className="form-check" key={f.bookId}>
                                     <input type="checkbox" className="form-check-input" id="similarCheckbox1" onChange={e => similarChangeHandler(f, e.target.checked)} />
                                     <label className="form-check-label" htmlFor="similarCheckbox1">{f.title}</label>
                                 </div>
@@ -84,13 +84,36 @@ const Recommendations = () => {
 
                         <div className="form-group">
                             <p className="text-decoration-underline">Genre:</p>
-                            {genres.map(g => (
-                                <div className="form-check">
-                                    <input type="checkbox" className="form-check-input" id={`${g}Checkbox`} onChange={e => genreChangeHandler(g, e.target.checked)} />
-                                    <label className="form-check-label" htmlFor={`${g}Checkbox`}>{g}</label>
+                            <div className="row">
+                                <div className="col-6">
+                                    {genres.slice(0, Math.ceil(genres.length / 2)).map(g => (
+                                        <div className="form-check" key={g}>
+                                            <input
+                                                type="checkbox"
+                                                className="form-check-input"
+                                                id={`${g}Checkbox`}
+                                                onChange={e => genreChangeHandler(g, e.target.checked)}
+                                            />
+                                            <label className="form-check-label" htmlFor={`${g}Checkbox`}>{g}</label>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                                <div className="col-6">
+                                    {genres.slice(Math.ceil(genres.length / 2)).map(g => (
+                                        <div className="form-check" key={g}>
+                                            <input
+                                                type="checkbox"
+                                                className="form-check-input"
+                                                id={`${g}Checkbox`}
+                                                onChange={e => genreChangeHandler(g, e.target.checked)}
+                                            />
+                                            <label className="form-check-label" htmlFor={`${g}Checkbox`}>{g}</label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
+
 
                         <button type="submit" className="btn btn-primary mt-4">Get Recommendations</button>
                     </form>
@@ -98,9 +121,9 @@ const Recommendations = () => {
             </section>
             <section className="col">
                 <h4 className="text-decoration-underline">Recommendations</h4>
-                {recommendations.length > 0 ? (
+                {ctx.recommendations.length > 0 ? (
                     <ul>
-                        {recommendations.map(b => (
+                        {ctx.recommendations.map(b => (
                             <li className="card w-100 my-3" key={b.bookId} id={b.bookId}>
                                 <div className="row">
                                     <div className="col-3">
