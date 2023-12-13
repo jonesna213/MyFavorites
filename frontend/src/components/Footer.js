@@ -5,6 +5,7 @@ const Footer = () => {
         <footer className={styles.footer}>
             <div className="text-center">
                 <h4>My Favorites</h4>
+                <p>A place to save your favorite media, and get recommendations!</p>
             </div>
             <hr />
             <div className="text-center">

@@ -61,7 +61,7 @@ const Recommendations = () => {
             if (result.ok) {
                 ctx.setRecommendations(data);
             }
-            console.log("test");
+            
             setLoading(false);
         } catch (err) {
             console.log(err);

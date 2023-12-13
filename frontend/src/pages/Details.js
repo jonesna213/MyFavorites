@@ -1,11 +1,13 @@
-import { Suspense } from "react";
+import { Suspense, useContext } from "react";
 import { Await, defer, useLoaderData } from "react-router";
 import parse from "html-react-parser";
 import { Link } from "react-router-dom";
 import noImage from "../assets/Image_not_available.png";
+import { Context } from "../store/Context";
 
 const Details = () => {
     const { item, returnTo } = useLoaderData();
+    const ctx = useContext(Context);
 
     let url = "/";
     if (returnTo !== "home") {
@@ -19,7 +21,7 @@ const Details = () => {
                     <h4 className="text-center text-danger py-5">{item.errorMessage}</h4>
                 ) : (
                     <>
-                        <Link to={`${url}#${item.id}`} className="btn btn-secondary px-4 my-3">Back</Link>
+                        <Link to={`${url}#${item.bookId}`} className="btn btn-secondary px-4 my-3">Back</Link>
                         <div className="row my-3">
                             <div className="col">
                                 <h2 className="mb-3">{item.title}</h2>
@@ -36,7 +38,13 @@ const Details = () => {
                                             {i.type.replace("_", "")} - {i.identifier}
                                         </p>
                                     })}
-                                    <a className="btn btn-primary" href={item.googleLink} target="_blank" rel="noreferrer">View on Google Play</a>
+                                    <a className="btn btn-primary mb-3" href={item.googleLink} target="_blank" rel="noreferrer">View on Google Play</a>
+                                    <br />
+                                    {ctx.user.favorites.map(i => i.bookId).includes(item.bookId) ? (
+                                        <button className="btn btn-danger" onClick={() => ctx.favoritesHandler(item, "remove")}>Remove from Favorites</button>
+                                    ) : (
+                                        <button className="btn btn-success" onClick={() => ctx.favoritesHandler(item, "add")}>Add to Favorites</button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -71,7 +79,7 @@ const loadItem = async id => {
 
         if (result.ok) {
             const item = {
-                id: resData.id,
+                bookId: resData.id,
                 kind: "book",
                 authors: [...resData.volumeInfo.authors || []],
                 pageCount: resData.volumeInfo.pageCount,
@@ -106,7 +114,7 @@ const loadItem = async id => {
  * @returns an object containing the item and search term
  */
 export const loader = async ({ request, params }) => {
-    const {id, returnTo} = params;
+    const { id, returnTo } = params;
 
     return defer({
         item: await loadItem(id),
