@@ -45,12 +45,15 @@ const ContextProvider = ({children}) => {
                     book
                 })
             });
+            
             const data = await result.json();
 
             if (result.ok) {
                 const updatedUser = { ...user };
                 updatedUser.favorites = data.updatedFavorites;
                 setUser(updatedUser);
+            } else if (data.message === "jwt expired") {
+                window.location.href = "/loggedOut/Your session has expired";
             }
         } catch (err) {
             console.log(err);

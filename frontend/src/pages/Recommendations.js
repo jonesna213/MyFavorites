@@ -3,11 +3,14 @@ import { Context } from "../store/Context";
 import { Link } from "react-router-dom";
 import noImage from "../assets/Image_not_available.png";
 import Loading from "../components/Loading";
+import authorize from "../hooks/authorize";
 
-const genres = ["Fiction", "Mystery/Thriller", "Science Fiction", "Fantasy", "Romance", "Historical Fiction", "Non-fiction", "Biography/Autobiography", "Self-help", "Horror", "Adventure", "Poetry", "Comedy/Humor", "Drama", "Young Adult (YA)", "Children's", "Crime/Noir", "Business/Finance", "Science/Nature", "Travel"];
+const genres = ["Fiction", "Mystery/Thriller", "Science Fiction", "Fantasy", "Romance", "Historical Fiction", "Non-fiction", "Biography/Autobiography", "Self-help", "Horror", "Adventure", "Poetry", "Comedy/Humor", "Drama", "Young Adult", "Children's", "Crime/Noir", "Business/Finance", "Science/Nature", "Travel"];
 
 const Recommendations = () => {
     const ctx = useContext(Context);
+    authorize(ctx);
+    
     const [checkedGenres, setCheckedGenres] = useState([]);
     const [checkedFavorites, setCheckedFavorites] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -60,6 +63,8 @@ const Recommendations = () => {
 
             if (result.ok) {
                 ctx.setRecommendations(data);
+            } else if (data.message === "jwt expired") {
+                window.location.href = "/loggedOut/Your session has expired";
             }
             
             setLoading(false);

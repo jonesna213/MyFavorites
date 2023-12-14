@@ -8,6 +8,7 @@ import Details, { loader as itemDetailLoader } from "./pages/Details";
 import Favorites from "./pages/Favorites";
 import ContextProvider from "./store/Context";
 import Recommendations from "./pages/Recommendations";
+import LoggedOut from "./pages/LoggedOut";
 
 const routes = [
     {
@@ -20,7 +21,8 @@ const routes = [
             { path: "/signup", element: <SignUp /> },
             { path: "/details/:id/:returnTo", element: <Details />, loader: itemDetailLoader },
             { path: "/favorites", element: <Favorites /> },
-            { path: "/recommendations", element: <Recommendations /> }
+            { path: "/recommendations", element: <Recommendations /> },
+            { path: "/loggedOut/:reason", element: <LoggedOut /> }
         ],
     }
 ];

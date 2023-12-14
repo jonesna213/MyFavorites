@@ -98,7 +98,7 @@ const HomePage = () => {
                         <input type="text" className="form-control" id="searchTerm" name="searchTerm" placeholder="What are you looking for?" value={ctx.searchTerm} onChange={e => ctx.setSearchTerm(e.target.value)} />
                     </div>
                     <div className="col">
-                        <select class="form-select" onChange={e => ctx.setSearchType(e.target.value)}>
+                        <select className="form-select" onChange={e => ctx.setSearchType(e.target.value)}>
                             <option selected value="intitle">Title</option>
                             <option value="inauthor">Author</option>
                             <option value="inpublisher">Publisher</option>

@@ -2,9 +2,11 @@ import { useContext } from "react";
 import { Context } from "../store/Context";
 import { Link } from "react-router-dom";
 import noImage from "../assets/Image_not_available.png";
+import authorize from "../hooks/authorize";
 
 const Favorites = () => {
     const ctx = useContext(Context);
+    authorize(ctx);
 
     return (
         <section>
