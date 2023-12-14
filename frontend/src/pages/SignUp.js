@@ -98,7 +98,6 @@ const SignUp = () => {
         } catch (err) {
             setError(true);
             setCreatingAccountMessage(false);
-            return;
         }
     }   
 

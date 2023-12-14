@@ -7,28 +7,40 @@ import { Context } from "../store/Context";
 const HomePage = () => {
     const [error, setError] = useState();
     const [searching, setSearching] = useState();
-    let startIndex = 0;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [startIndex, setStartIndex] = useState(0);
+    const maxResults = 15;
 
     const ctx = useContext(Context);
 
     /**
      * Runs when the search button is clicked. Takes input then searches api with the passed in search term.
      * 
-     * @param {*} event 
+     * @param {*} event default event object from form
      * @returns technically nothing but, sets the required states
      */
     const searchHandler = async event => {
         event.preventDefault();
+
+        callGoogleApi();
+    }
+
+    const handlePagination = direction => {
+        if (direction === "Back") {
+            ctx.setSearchResults([]);
+        } else if (direction === "Next") {
+            ctx.setSearchResults([]);
+        }
+    }
+
+    const callGoogleApi = async () => {
         setSearching(true);
         setError(false);
 
-        const search = ctx.searchTerm.trim().replace(" ", "%20");
-
         const searchType = "intitle"; //get from dropdown thing
-        const maxResults = 20;
 
         try {
-            const result = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchType}:${search}&startIndex=${startIndex}&maxResults=${maxResults}`);
+            const result = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchType}:${ctx.searchTerm}&startIndex=${startIndex}&maxResults=${maxResults}`);
 
             const resData = await result.json();
 
@@ -55,18 +67,14 @@ const HomePage = () => {
                 }));
 
                 setSearching(false);
-                return;
             } else {
                 setSearching(false);
                 setError(true);
-                return;
             }
-
         } catch (err) {
             console.log(err);
             setSearching(false);
             setError(true);
-            return;
         }
     }
 
@@ -129,6 +137,13 @@ const HomePage = () => {
                             </li>
                         ))}
                     </ul>
+                    <div className="d-flex align-items-center justify-content-center my-3">
+                        {currentPage > 1 && (
+                            <button className="btn btn-secondary" onClick={handlePagination("Back")}>Back</button>
+                        )}
+                        <p className="my-1 mx-3">{currentPage}-{Math.ceil(ctx.totalItems/maxResults)}</p>
+                        <button className="btn btn-secondary" onClick={handlePagination("Next")}>Next</button>
+                    </div>
                 </section>
             )}
         </>

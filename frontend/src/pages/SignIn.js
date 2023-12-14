@@ -45,17 +45,14 @@ const SignIn = () => {
                 
                 ctx.setUser(user);
                 navigate("/");
-                return;
             } else {
                 setLoggingInMessage(false);
                 setError(true);
-                return;
             }
 
         } catch (err) {
             setLoggingInMessage(false);
             setUnexpectedError(true);
-            return;
         }
     }
 

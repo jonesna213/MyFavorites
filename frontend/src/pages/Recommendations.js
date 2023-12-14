@@ -65,7 +65,6 @@ const Recommendations = () => {
             setLoading(false);
         } catch (err) {
             console.log(err);
-            return;
         }
     }
 
