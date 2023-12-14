@@ -13,6 +13,8 @@ const Details = () => {
     if (returnTo !== "home") {
         url = `/${returnTo}`;
     }
+    let amazonAuthors = item.authors.length > 1 ? item.authors.join(",+") : item.authors;
+    let amazonLink = "https://www.amazon.com/s?k=" + item.title + "+" + amazonAuthors;
 
     return (
         <Suspense fallback={<p className="text-center">Loading...</p>}>
@@ -38,7 +40,9 @@ const Details = () => {
                                             {i.type.replace("_", "")} - {i.identifier}
                                         </p>
                                     })}
-                                    <a className="btn btn-primary mb-3" href={item.googleLink} target="_blank" rel="noreferrer">View on Google Play</a>
+
+                                    <a className="btn btn-primary" href={item.googleLink} target="_blank" rel="noreferrer">View on Google Play</a>
+                                    <a className="btn btn-warning ms-3 my-3" href={amazonLink} target="_blank" rel="noreferrer">View on Amazon</a>
                                     <br />
                                     {ctx.user.favorites.map(i => i.bookId).includes(item.bookId) ? (
                                         <button className="btn btn-danger" onClick={() => ctx.favoritesHandler(item, "remove")}>Remove from Favorites</button>
