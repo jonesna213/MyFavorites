@@ -10,6 +10,7 @@ export const Context = createContext({
 
 const ContextProvider = ({children}) => {
     const [searchTerm, setSearchTerm] = useState("");
+    const [searchType, setSearchType] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [totalItems, setTotalItems] = useState(null);
     const [user, updateUser] = useState(JSON.parse(localStorage.getItem("userInfo")) || null);
@@ -68,7 +69,9 @@ const ContextProvider = ({children}) => {
         setUser,
         favoritesHandler,
         recommendations,
-        setRecommendations
+        setRecommendations,
+        searchType,
+        setSearchType
     };
 
     return (

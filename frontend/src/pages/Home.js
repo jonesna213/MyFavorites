@@ -36,7 +36,7 @@ const HomePage = () => {
         } else if (direction === "Next") {
             ctx.setSearchResults([]);
             setStartIndex(startIndex + maxResults);
-            
+
             await callGoogleApi();
 
             setCurrentPage(currentPage + 1);
@@ -49,16 +49,11 @@ const HomePage = () => {
         setSearching(true);
         setError(false);
 
-        const searchType = "intitle"; //get from dropdown thing
-
         try {
-            const result = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchType}:${ctx.searchTerm}&startIndex=${startIndex}&maxResults=${maxResults}`);
-
-            console.log("result", result);
+            const result = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${ctx.searchType}:${ctx.searchTerm}&startIndex=${startIndex}&maxResults=${maxResults}`);
 
             const resData = await result.json();
 
-            console.log("resdata", resData);
             if (result.ok) {
                 ctx.setTotalItems(resData.totalItems);
                 ctx.setSearchResults(resData.items.map(i => {
@@ -102,7 +97,16 @@ const HomePage = () => {
                     <div className="col-8">
                         <input type="text" className="form-control" id="searchTerm" name="searchTerm" placeholder="What are you looking for?" value={ctx.searchTerm} onChange={e => ctx.setSearchTerm(e.target.value)} />
                     </div>
-                    <div className="col-4">
+                    <div className="col">
+                        <select class="form-select" onChange={e => ctx.setSearchType(e.target.value)}>
+                            <option selected value="intitle">Title</option>
+                            <option value="inauthor">Author</option>
+                            <option value="inpublisher">Publisher</option>
+                            <option value="subject">Subject</option>
+                            <option value="isbn">ISBN</option>
+                        </select>
+                    </div>
+                    <div className="col">
                         <button type="submit" className="btn btn-primary px-5 py-2">Search</button>
                     </div>
 
@@ -156,7 +160,7 @@ const HomePage = () => {
                         {currentPage > 1 && (
                             <button className="btn btn-secondary" onClick={() => handlePagination("Back")}>Back</button>
                         )}
-                        <p className="my-1 mx-3">{currentPage}-{Math.ceil(ctx.totalItems/maxResults)}</p>
+                        <p className="my-1 mx-3">{currentPage}-{Math.ceil(ctx.totalItems / maxResults)}</p>
                         <button className="btn btn-secondary" onClick={() => handlePagination("Next")}>Next</button>
                     </div>
                 </section>
