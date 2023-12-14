@@ -25,12 +25,24 @@ const HomePage = () => {
         callGoogleApi();
     }
 
-    const handlePagination = direction => {
+    const handlePagination = async direction => {
         if (direction === "Back") {
             ctx.setSearchResults([]);
+            setStartIndex(startIndex - maxResults);
+
+            await callGoogleApi();
+
+            setCurrentPage(currentPage - 1);
         } else if (direction === "Next") {
             ctx.setSearchResults([]);
+            setStartIndex(startIndex + maxResults);
+            
+            await callGoogleApi();
+
+            setCurrentPage(currentPage + 1);
         }
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     const callGoogleApi = async () => {
@@ -42,8 +54,11 @@ const HomePage = () => {
         try {
             const result = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchType}:${ctx.searchTerm}&startIndex=${startIndex}&maxResults=${maxResults}`);
 
+            console.log("result", result);
+
             const resData = await result.json();
 
+            console.log("resdata", resData);
             if (result.ok) {
                 ctx.setTotalItems(resData.totalItems);
                 ctx.setSearchResults(resData.items.map(i => {
@@ -139,10 +154,10 @@ const HomePage = () => {
                     </ul>
                     <div className="d-flex align-items-center justify-content-center my-3">
                         {currentPage > 1 && (
-                            <button className="btn btn-secondary" onClick={handlePagination("Back")}>Back</button>
+                            <button className="btn btn-secondary" onClick={() => handlePagination("Back")}>Back</button>
                         )}
                         <p className="my-1 mx-3">{currentPage}-{Math.ceil(ctx.totalItems/maxResults)}</p>
-                        <button className="btn btn-secondary" onClick={handlePagination("Next")}>Next</button>
+                        <button className="btn btn-secondary" onClick={() => handlePagination("Next")}>Next</button>
                     </div>
                 </section>
             )}
